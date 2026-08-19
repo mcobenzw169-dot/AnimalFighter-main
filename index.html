@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        ～暗黒の世界を救え～
+    </title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="game">
+
+        <!-- =========================
+             タイトル画面
+        ========================== -->
+        <div id="title">
+
+            <img
+                id="titleLogo"
+                src="images/logo.png"
+                alt="アニマルファイター"
+            >
+
+            <p>
+                黒い隕石で暗黒世界となった森を救おう！
+            </p>
+
+            <button onclick="startGame()">
+                はじめる
+            </button>
+
+        </div>
+
+
+
+        <!-- =========================
+             ストーリー画面
+        ========================== -->
+<div id="meteorScene">
+
+    <div id="meteorMessage" class="meteor-message">
+        平和などうぶつの森
+    </div>
+
+    <img
+        id="meteorImage"
+        src="images/black_meteor.png"
+        alt="黒い隕石"
+    >
+
+    <div id="impactFlash"></div>
+
+</div>
+
+        <div id="story">
+
+            <div class="story-box">
+
+                 <!-- ===============================
+     ストーリー画像＋操作ボタン
+================================ -->
+<div class="story-image-area">
+
+    <img
+        id="storyMainImage"
+        src="images/story_lizard.png"
+        alt="勇気を出して戦いに向かうトカゲ"
+    >
+
+
+    <!-- 画像右上の「スキップ」 -->
+    <button
+        type="button"
+        class="story-image-skip"
+        onclick="skipStory()"
+        aria-label="ストーリーをスキップ"
+    ></button>
+
+
+    <!-- 画像右下の「戦いに出る！」 -->
+    <button
+        type="button"
+        class="story-image-start"
+        onclick="beginBattle()"
+        aria-label="戦いに出る"
+    ></button>
+
+</div>
+
+<h2>
+🌑 <ruby>暗黒<rt>あんこく</rt></ruby>の
+<ruby>森<rt>もり</rt></ruby>で
+<ruby>起<rt>お</rt></ruby>きたこと
+</h2>
+
+<p>
+
+ある<ruby>日<rt>ひ</rt></ruby>、
+
+<ruby>平和<rt>へいわ</rt></ruby>な
+どうぶつの
+<ruby>森<rt>もり</rt></ruby>に、
+
+<ruby>黒<rt>くろ</rt></ruby>く
+<ruby>光<rt>ひか</rt></ruby>る
+<ruby>巨大<rt>きょだい</rt></ruby>な
+<ruby>隕石<rt>いんせき</rt></ruby>が
+<ruby>落<rt>お</rt></ruby>ちてきました。
+
+<br><br>
+
+<ruby>隕石<rt>いんせき</rt></ruby>から
+あふれ<ruby>出<rt>だ</rt></ruby>した
+<ruby>暗黒<rt>あんこく</rt></ruby>の
+<ruby>力<rt>ちから</rt></ruby>は、
+
+<ruby>森<rt>もり</rt></ruby>
+<ruby>全体<rt>ぜんたい</rt></ruby>を
+<ruby>飲<rt>の</rt></ruby>み<ruby>込<rt>こ</rt></ruby>み、
+
+どうぶつたちを
+<ruby>凶暴<rt>きょうぼう</rt></ruby>な
+<ruby>姿<rt>すがた</rt></ruby>へ
+<ruby>変<rt>か</rt></ruby>えてしまいました。
+
+<br><br>
+
+<ruby>暗黒<rt>あんこく</rt></ruby>の
+<ruby>力<rt>ちから</rt></ruby>に
+<ruby>負<rt>ま</rt></ruby>けなかったのは、
+
+<ruby>勇気<rt>ゆうき</rt></ruby>ある
+<ruby>一匹<rt>いっぴき</rt></ruby>の
+トカゲだけ。
+
+<br><br>
+
+トカゲは
+<ruby>仲間<rt>なかま</rt></ruby>たちを
+<ruby>助<rt>たす</rt></ruby>けながら、
+
+<ruby>暗黒<rt>あんこく</rt></ruby>の
+<ruby>森<rt>もり</rt></ruby>の
+<ruby>奥<rt>おく</rt></ruby>へ
+<ruby>進<rt>すす</rt></ruby>んでいきます。
+
+<br><br>
+
+<ruby>森<rt>もり</rt></ruby>の
+<ruby>奥<rt>おく</rt></ruby>に
+ひそむ
+
+<ruby>暗黒王<rt>あんこくおう</rt></ruby>
+ダークタイガーを
+<ruby>倒<rt>たお</rt></ruby>し、
+
+すべての
+どうぶつを
+<ruby>元<rt>もと</rt></ruby>の
+<ruby>姿<rt>すがた</rt></ruby>に
+<ruby>戻<rt>もど</rt></ruby>そう！
+</p>                
+
+<button id="battleStartButton" onclick="beginBattle()">
+    ⚔️ 冒険をはじめる！
+</button>
+
+            </div>
+
+        </div>
+<!-- =========================
+     敵の出現シーン
+========================== -->
+<div id="enemyIntroScene">
+
+    <h2 id="enemyIntroStage">
+        ステージ1
+    </h2>
+
+    <div class="enemy-intro-area">
+
+        <img
+            id="enemyIntroImage"
+            src="images/rabbit_dark.png"
+            alt="暗黒の敵"
+        >
+
+        <div id="enemyIntroSmoke"></div>
+
+    </div>
+
+    <p id="enemyIntroMessage">
+        森の奥から何かが近づいてくる……
+    </p>
+
+</div>
+
+<!-- =========================
+     バトル画面
+========================== -->
+<div id="battle">
+
+    <!-- 上部ステータス -->
+    <div class="statusArea">
+
+        <!-- 主人公ステータス -->
+        <div class="statusBox">
+
+            <h3>主人公トカゲ</h3>
+
+            <div class="hpBar">
+                <div
+                    id="playerHPFill"
+                    class="hpGreen"
+                ></div>
+            </div>
+
+            <p id="playerHPText">
+                100 / 100
+            </p>
+
+        </div>
+
+
+        <!-- 中央ステータス -->
+        <div class="statusCenter">
+
+            <h2 id="stage">
+                ステージ1
+            </h2>
+
+            <p>
+                🪙
+                <span id="coin">0</span>
+            </p>
+
+        </div>
+
+
+        <!-- 敵ステータス -->
+        <div class="statusBox">
+
+            <h3 id="enemyName">
+                暗黒うさぎ
+            </h3>
+
+            <div class="hpBar">
+                <div
+                    id="enemyHPFill"
+                    class="hpRed"
+                ></div>
+            </div>
+
+            <p id="enemyHPText">
+                100 / 100
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         キャラクター表示
+    ========================== -->
+    <div class="row">
+
+        <!-- 主人公 -->
+        <div class="characterBox">
+
+            <h3>主人公トカゲ</h3>
+
+            <div
+                id="player"
+                class="char player-character"
+            >
+
+                <!-- 主人公 -->
+                <img
+                    id="playerImage"
+                    src="images/lizard.png"
+                    alt="主人公トカゲ"
+                >
+
+                <!-- 葉っぱヘルメット -->
+                <img
+                    id="equippedHelmet"
+                    class="equipment equipment-helmet"
+                    src="images/leaf_helmet.png"
+                    alt="葉っぱヘルメット"
+                >
+
+                <!-- 木の棒 -->
+                <img
+                    id="equippedStick"
+                    class="equipment equipment-stick"
+                    src="images/stick.png"
+                    alt="木の棒"
+                >
+
+                <!-- 木の剣 -->
+                <img
+                    id="equippedSword"
+                    class="equipment equipment-sword"
+                    src="images/wooden_sword.png"
+                    alt="木の剣"
+                >
+
+                <!-- 鋼の剣 -->
+                <img
+                    id="equippedSteelSword"
+                    class="equipment equipment-sword"
+                    src="images/steel_sword.png"
+                    alt="鋼の剣"
+                >
+
+                <!-- 鋼のヘルメット -->
+                <img
+                    id="equippedSteelHelmet"
+                    class="equipment equipment-helmet"
+                    src="images/steel_helmet.png"
+                    alt="鋼のヘルメット"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- VS -->
+        <div class="vs">
+            VS
+        </div>
+
+
+        <!-- 敵 -->
+        <div class="characterBox">
+
+            <h3 id="battleEnemyName">
+                暗黒うさぎ
+            </h3>
+
+            <div
+                id="enemy"
+                class="char enemy"
+            >
+
+                <div id="damageText"></div>
+
+                <img
+                    id="enemyImage"
+                    src="images/rabbit_dark.png"
+                    alt="暗黒うさぎ"
+                >
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         バトルコマンド
+    ========================== -->
+    <div class="menu">
+
+        <!-- トカゲの技 -->
+        <div class="attackMenu">
+
+            <h3>⚔️ トカゲの技</h3>
+
+            <button
+                type="button"
+                onclick="attack('bite')"
+            >
+                🦷 かみつく
+            </button>
+
+            <button
+                type="button"
+                onclick="attack('poison')"
+            >
+                ☠️ 毒
+            </button>
+
+            <button
+                type="button"
+                onclick="attack('scratch')"
+            >
+                ✨ ひっかき
+            </button>
+
+            <button
+                type="button"
+                onclick="attack('shed')"
+            >
+                🛡️ 脱皮
+            </button>
+
+        </div>
+
+
+        <!-- 所持アイテム -->
+        <div
+            id="itemMenu"
+            class="itemMenu"
+            style="display: none;"
+        >
+
+            <h3>🎒 所持アイテム</h3>
+
+            <!-- バナナチップス -->
+            <button
+                id="bananaButton"
+                type="button"
+                style="display: none;"
+                onclick="useBananaChips()"
+            >
+                🍌 バナナチップス
+            </button>
+
+            <!-- 回復の実 -->
+            <button
+                id="healFruitButton"
+                type="button"
+                style="display: none;"
+                onclick="useHealFruit()"
+            >
+                💚 回復の実
+            </button>
+
+            <!-- 必殺の実 -->
+            <button
+                id="specialFruitButton"
+                type="button"
+                style="display: none;"
+                onclick="useSpecialFruit()"
+            >
+                🔥 必殺の実
+            </button>
+
+            <!-- バリアの実 -->
+            <button
+                id="barrierFruitButton"
+                type="button"
+                style="display: none;"
+                onclick="useBarrierFruit()"
+            >
+                🛡️ バリアの実
+            </button>
+
+            <!-- レインボーバリア -->
+            <button
+                id="rainbowBarrierButton"
+                type="button"
+                style="display: none;"
+                onclick="useRainbowBarrier()"
+            >
+                🌈 レインボーバリア
+            </button>
+
+        </div>
+
+    </div>
+    <!-- menu終了 -->
+
+
+    <!-- =========================
+         ラスボス戦・仲間の追撃
+    ========================== -->
+    <div
+        id="bossCompanionCommands"
+        class="boss-companion-commands"
+        style="display: none;"
+    >
+
+        <h3>🤝 仲間の追撃</h3>
+
+        <p id="bossCompanionMessage">
+            トカゲの攻撃後、追撃する仲間を1匹選ぼう！
+        </p>
+
+        <!-- 仲間全員を並べる場所 -->
+        <div id="bossCompanionParty"></div>
+
+        <!-- 仲間を選ぶボタン -->
+        <div id="bossCompanionButtons"></div>
+
+    </div>
+    <!-- bossCompanionCommands終了 -->
+
+
+    <!-- バトルメッセージ -->
+    <p id="log">
+        暗黒うさぎが現れた！
+    </p>
+
+</div>
+<!-- battle終了 -->       
+
+
+<!-- =========================
+     仲間加入・森を歩く画面
+========================== -->
+<div id="companionScene">
+
+    <div class="companion-scene-box">
+
+        <h2 id="companionTitle">
+            新しい仲間が加わった！
+        </h2>
+
+        <p id="companionMessage">
+            暗黒の力から助け出した！
+        </p>
+
+        <div class="forestWalkArea">
+
+            <div id="walkingParty">
+
+                <img
+                    id="walkingLizard"
+                    class="walking-character"
+                    src="images/lizard.png"
+                    alt="主人公トカゲ"
+                >
+
+                <div id="walkingFriends"></div>
+
+            </div>
+
+        </div>
+
+        <p class="walkText">
+            仲間たちと一緒に、暗黒の森の奥へ進もう！
+        </p>
+
+        <button
+            type="button"
+            onclick="openShop()"
+        >
+            ショップへ進む
+        </button>
+
+    </div>
+
+</div>
+<!-- companionScene終了 -->
+
+        <!-- =========================
+     ショップ画面
+========================== -->
+<div id="shop">
+
+    <h2>森のアイテムショップ</h2>
+
+    <img
+        class="shopImage"
+        src="images/shop.png"
+        alt="アイテムショップ"
+    >
+
+    <p class="shopCoin">
+        🪙 所持コイン：
+        <span id="shopCoin">0</span>
+    </p>
+
+    <p id="shopMessage">
+        アイテムを選んでね！
+    </p>
+
+
+    <div class="shopItems">
+
+        <!-- バナナチップス -->
+        <div class="shopItem">
+
+            <img
+                src="images/banana_chips.png"
+                alt="バナナチップス"
+            >
+
+            <h3>バナナチップス</h3>
+
+            <p>HPを50回復する</p>
+
+            <p>🪙 50コイン</p>
+
+            <button
+                type="button"
+                onclick="buyItem('banana')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+        <!-- 回復の実 -->
+<div class="shopItem">
+
+    <img
+        src="images/heal_fruit.png"
+        alt="回復の実"
+    >
+
+    <h3>回復の実</h3>
+
+    <p>バトル中にHPを100回復する</p>
+
+    <p>🪙 150コイン</p>
+
+    <button
+        type="button"
+        onclick="buyItem('healFruit')"
+    >
+        購入する
+    </button>
+
+</div>
+
+
+        <!-- 生命の木の実 -->
+        <div class="shopItem">
+
+            <img
+                src="images/life_fruit.png"
+                alt="生命の木の実"
+            >
+
+            <h3>生命の木の実</h3>
+
+            <p>最大HPが20増える</p>
+
+            <p>🪙 80コイン</p>
+
+            <button
+                type="button"
+                onclick="buyItem('fruit')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+
+        <!-- -->
+        <div class="shopItem">
+
+            <img
+                src="images/special_fruit.png"
+                alt="必殺の実"
+            >
+
+            <h3>必殺の実</h3>
+
+            <p>敵に150ダメージを与える</p>
+            <p>10ステージ以降は敵に250ダメージを与える</p>
+
+            <p>🪙 100コイン</p>
+
+            <button
+                type="button"
+                onclick="buyItem('specialFruit')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+
+        <!-- バリアの実 -->
+        <div class="shopItem">
+
+            <img
+                src="images/barrier_fruit.png"
+                alt="バリアの実"
+            >
+
+            <h3>バリアの実</h3>
+
+            <p>敵の攻撃を1回だけ完全に防ぐ</p>
+
+            <p>🪙 120コイン</p>
+
+            <button
+                type="button"
+                onclick="buyItem('barrierFruit')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+        <!-- レインボーバリア -->
+<div class="shopItem">
+
+    <img
+        src="images/rainbow_barrier.png"
+        alt="レインボーバリア"
+    >
+
+    <h3>🌈 レインボーバリア</h3>
+
+    <p>敵の攻撃を2回休ませる</p>
+
+    <p>🪙 300コイン</p>
+
+    <button
+        type="button"
+        onclick="buyItem('rainbowBarrier')"
+    >
+        購入する
+    </button>
+
+</div>
+
+
+        <!-- 葉っぱヘルメット -->
+        <div class="shopItem">
+
+            <img
+                src="images/leaf_helmet.png"
+                alt="葉っぱヘルメット"
+            >
+
+            <h3>葉っぱヘルメット</h3>
+
+            <p>最大HPが50増える</p>
+
+            <p>🪙 100コイン</p>
+
+            <button
+                id="helmetButton"
+                type="button"
+                onclick="buyItem('helmet')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+
+        <!-- 木の棒 -->
+        <div class="shopItem">
+
+            <img
+                src="images/stick.png"
+                alt="木の棒"
+            >
+
+            <h3>木の棒</h3>
+
+            <p>攻撃力が5増える</p>
+
+            <p>🪙 50コイン</p>
+
+            <button
+                id="stickButton"
+                type="button"
+                onclick="buyItem('stick')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+
+        <!-- 木の剣 -->
+        <div class="shopItem">
+
+            <img
+                src="images/wooden_sword.png"
+                alt="木の剣"
+            >
+
+            <h3>木の剣</h3>
+
+            <p>攻撃力が40増える</p>
+
+            <p>🪙 150コイン</p>
+
+            <button
+                id="swordButton"
+                type="button"
+                onclick="buyItem('sword')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+
+        <!-- 鋼の剣 -->
+        <div class="shopItem">
+
+            <img
+                src="images/steel_sword.png"
+                alt="鋼の剣"
+            >
+
+            <h3>⚔️ 鋼の剣</h3>
+
+            <p>攻撃力が80増える</p>
+
+            <p>🪙 200コイン</p>
+
+            <button
+                id="steelSwordButton"
+                type="button"
+                onclick="buyItem('steelSword')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+
+        <!-- 鋼のヘルメット -->
+        <div class="shopItem">
+
+            <img
+                src="images/steel_helmet.png"
+                alt="鋼のヘルメット"
+            >
+
+            <h3>⛑️ 鋼のヘルメット</h3>
+
+            <p>最大HPが150増える</p>
+
+            <p>🪙 250コイン</p>
+
+            <button
+                id="steelHelmetButton"
+                type="button"
+                onclick="buyItem('steelHelmet')"
+            >
+                購入する
+            </button>
+
+        </div>
+
+    </div>
+    <!-- shopItems終了 -->
+
+
+    <div class="shopButtons">
+
+        <button
+            type="button"
+            onclick="openInventory()"
+        >
+            🎒 所持アイテムを見る
+        </button>
+
+        <button
+            type="button"
+            class="nextStageButton"
+            onclick="nextStage()"
+        >
+            次のバトルへ
+        </button>
+
+    </div>
+
+</div>
+<!-- shop終了 -->
+
+
+        
+        <!-- =========================
+     所持アイテム画面
+========================== -->
+<div id="inventory">
+
+    <h2>🎒 所持アイテム</h2>
+
+    <div id="inventoryList">
+
+        <div class="inventory-item">
+            🍌 バナナチップス × <span id="bananaCount">0</span>
+        </div>
+
+        <div class="inventory-item">
+    🍎 生命の木の実 × <span id="fruitCount">0</span>
+</div>
+
+<div class="inventory-item">
+    💖 回復の実 ×
+    <span id="healFruitCount">0</span>
+</div>
+
+<div class="inventory-item">
+    🔥 必殺の実 ×
+    <span id="specialFruitCount">0</span>
+</div>
+
+<div class="inventory-item">
+    🛡️ バリアの実 ×
+    <span id="barrierFruitCount">0</span>
+</div>
+
+<div class="inventory-item">
+    🌈 レインボーバリア ×
+    <span id="rainbowBarrierCount">0</span>
+</div>
+
+
+
+        <div class="inventory-item">
+            🪵 木の棒 × <span id="stickCount">0</span>
+        </div>
+
+        <div class="inventory-item">
+            🍃 葉っぱヘルメット × <span id="helmetCount">0</span>
+        </div>
+
+        <div class="inventory-item">
+            🗡️ 木の剣 × <span id="swordCount">0</span>
+        </div>
+
+        <div class="inventory-item">
+    ⚔️ 鋼の剣 ×
+    <span id="steelSwordCount">0</span>
+</div>
+
+<div class="inventory-item">
+    ⛑️ 鋼のヘルメット ×
+    <span id="steelHelmetCount">0</span>
+</div>
+
+    </div>
+
+    <button type="button" onclick="openShop()">
+        ショップへ戻る
+    </button>
+
+</div>
+
+    
+
+    
+
+
+<!-- ラスボス登場画面 -->
+<section id="bossIntro">
+    <div class="boss-intro-box">
+        <h2>暗黒王、降臨！</h2>
+
+        <img
+            id="bossIntroImage"
+            src="images/dark_tiger.png"
+            alt="暗黒王ダークタイガー"
+        >
+
+        <p id="bossIntroMessage">
+            暗黒王ダークタイガーが現れた！
+        </p>
+
+        <button onclick="showBossRuleScene()">
+    ラスボスに挑む！
+</button>
+    </div>
+</section>
+<!-- =========================
+     ラスボス戦ルール説明
+========================== -->
+<!-- =========================
+     ラスボス戦ルール説明画面
+========================== -->
+<section
+    id="bossRuleScene"
+    style="display: none;"
+>
+
+    <div class="boss-rule-box">
+
+        <h1 class="boss-rule-title">
+            ⚔️ 最終決戦 ⚔️
+        </h1>
+
+        <h2 class="boss-rule-subtitle">
+            🤝 仲間と力を合わせて戦おう！
+        </h2>
+
+
+        <!-- =====================
+             トカゲ＋仲間たち
+        ====================== -->
+        <div class="boss-rule-party">
+
+            <!-- トカゲ -->
+            <div class="boss-rule-player">
+
+                <img
+                    src="images/lizard.png"
+                    alt="トカゲ"
+                >
+
+                <span>
+                    🦎 トカゲ
+                </span>
+
+            </div>
+
+
+            <!-- 仲間をJSでここに並べる -->
+            <div
+                id="bossRuleFriends"
+                class="boss-rule-friends"
+            ></div>
+
+        </div>
+
+
+        <!-- =====================
+             戦い方
+        ====================== -->
+        <div class="boss-rule-description">
+
+            <p>
+                🦎 <strong>まずトカゲが攻撃！</strong>
+            </p>
+
+            <p>
+                ⬇️
+            </p>
+
+            <p>
+                🤝 トカゲの攻撃後、
+                <strong>仲間を1匹選んで追撃！</strong>
+            </p>
+
+            <p>
+                ⬇️
+            </p>
+
+            <p>
+                🐯 ダークタイガーの攻撃を受けると、
+                <strong>戦える仲間が2匹ずつ減っていく！</strong>
+            </p>
+
+            <p>
+                ⬇️
+            </p>
+
+            <p>
+                🔥 仲間が全員戦えなくなったら、
+                <strong>最後はトカゲだけで戦う！</strong>
+            </p>
+
+        </div>
+
+
+        <div class="boss-rule-message">
+
+            仲間との絆を力に変えて<br>
+            暗黒王ダークタイガーを倒そう！
+
+        </div>
+
+
+        <button
+            class="boss-rule-start-button"
+            type="button"
+            onclick="startBossBattle()"
+        >
+            ⚔️ 最終決戦へ！
+        </button>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     トラが元に戻るラスト演出
+========================== -->
+<section id="tigerRescueScene">
+
+    <div class="tiger-rescue-box">
+
+        <h2 id="tigerRescueTitle">
+            ダークタイガーを倒した！
+        </h2>
+
+        <div id="tigerTransformArea">
+
+            <!-- 暗黒のトラ -->
+            <img
+                id="endingDarkTiger"
+                src="images/dark_tiger.png"
+                alt="暗黒王ダークタイガー"
+            >
+
+            <!-- 元に戻ったトラ -->
+            <img
+                id="endingNormalTiger"
+                src="images/tiger.png"
+                alt="元に戻ったトラ"
+            >
+
+            <!-- 光の演出 -->
+            <div id="tigerEndingLight"></div>
+
+        </div>
+
+        <p id="tigerRescueMessage">
+            暗黒の力が消えていく……
+        </p>
+
+        <!-- 会話表示 -->
+        <div id="endingDialogue">
+
+            <img
+                id="endingSpeakerImage"
+                src="images/tiger.png"
+                alt="話しているキャラクター"
+            >
+
+            <p id="endingDialogueText"></p>
+
+        </div>
+
+        <!-- 仲間集合 -->
+        <div id="rescueEndingFriends"></div>
+
+    </div>
+
+</section>
+
+<!-- =========================
+     エンディング画面
+========================== -->
+<section id="ending">
+
+    <div class="ending-box">
+
+        <h1>🌈 ゲームクリア！</h1>
+
+        <p id="endingMessage">
+            暗黒の力は消え、森に平和が戻った！
+        </p>
+
+        <!-- 元に戻ったトラ -->
+        <div class="ending-tiger-area">
+
+            <h2>
+                🐯 ダークタイガーも
+                <ruby>元<rt>もと</rt></ruby>の
+                <ruby>姿<rt>すがた</rt></ruby>に
+                <ruby>戻<rt>もど</rt></ruby>った！
+            </h2>
+
+            <img
+                id="endingTiger"
+                src="images/tiger.png"
+                alt="元に戻ったトラ"
+            >
+
+            <p>
+                トラはトカゲたちにあやまり、
+                <ruby>仲間<rt>なかま</rt></ruby>になりました。
+            </p>
+
+        </div>
+
+        <h2>
+            🌳 <ruby>平和<rt>へいわ</rt></ruby>になった
+            <ruby>森<rt>もり</rt></ruby>
+        </h2>
+
+        <!-- トカゲ・トラ・仲間全員 -->
+        <div id="endingFriends"></div>
+
+        <p class="ending-final-message">
+            トカゲとトラ、そして
+            <ruby>仲間<rt>なかま</rt></ruby>たちは、<br>
+            いつまでも
+            <ruby>仲良<rt>なかよ</rt></ruby>く
+            <ruby>平和<rt>へいわ</rt></ruby>な
+            <ruby>森<rt>もり</rt></ruby>で
+            <ruby>暮<rt>く</rt></ruby>らしました。
+        </p>
+
+        <button
+            type="button"
+            onclick="restartGame()"
+        >
+            もう一度あそぶ
+        </button>
+
+    </div>
+
+</section>
+
+<div id="companionSkillEffect"></div>
+
+<!-- =========================
+     BGM
+========================== -->
+
+<audio id="titleBgm" src="sounds/title.mp3" loop></audio>
+
+<audio id="battleBgm" src="sounds/battle.mp3" loop></audio>
+
+<audio id="walkBgm" src="sounds/walk.mp3" loop></audio>
+
+<audio id="shopBgm" src="sounds/shop.mp3" loop></audio>
+
+<audio id="bossBattleBgm" src="sounds/boss_battle.mp3" loop></audio>
+
+
+<!-- =========================
+     イベント効果音
+========================== -->
+
+<audio id="victorySound" src="sounds/victory.mp3"></audio>
+
+<audio id="bossIntroSound" src="sounds/boss_intro.mp3"></audio>
+
+<audio id="bossClearSound" src="sounds/boss_clear.mp3"></audio>
+
+
+<!-- =========================
+     攻撃効果音
+========================== -->
+
+<audio id="biteSound" src="sounds/bite.mp3"></audio>
+
+<audio id="poisonSound" src="sounds/poison.mp3"></audio>
+
+<audio id="scratchSound" src="sounds/scratch.mp3"></audio>
+
+<audio id="shedSound" src="sounds/shed.mp3"></audio>
+
+
+<!-- =========================
+     アイテム効果音
+========================== -->
+
+<audio id="bananaSound" src="sounds/banana.mp3"></audio>
+
+<audio id="healFruitSound" src="sounds/heal_fruit.mp3"></audio>
+
+<audio id="specialFruitSound" src="sounds/special_fruit.mp3"></audio>
+
+<audio id="barrierSound" src="sounds/barrier.mp3"></audio>
+
+<audio id="rainbowBarrierSound" src="sounds/rainbow_barrier.mp3"></audio>
+
+
+<!-- =========================
+     ゲームBGM
+========================== -->
+
+<!-- タイトルBGM -->
+<audio
+    id="titleBgm"
+    src="sounds/title.mp3"
+    loop
+></audio>
+
+<!-- 通常バトルBGM -->
+<audio
+    id="battleBgm"
+    src="sounds/battle.mp3"
+    loop
+></audio>
+
+<!-- 仲間と移動する時のBGM -->
+<audio
+    id="walkBgm"
+    src="sounds/walk.mp3"
+    loop
+></audio>
+
+<!-- ショップBGM -->
+<audio
+    id="shopBgm"
+    src="sounds/shop.mp3"
+    loop
+></audio>
+
+<!-- ラスボス戦BGM -->
+<audio
+    id="bossBattleBgm"
+    src="sounds/boss_battle.mp3"
+    loop
+></audio>
+
+
+<!-- =========================
+     イベント効果音
+========================== -->
+
+<!-- 通常ステージクリア -->
+<audio
+    id="victorySound"
+    src="sounds/victory.mp3"
+></audio>
+
+<!-- 通常の敵出現音 -->
+<audio
+    id="enemyIntroSound"
+    src="sounds/enemy_intro.mp3"
+></audio>
+
+<!-- ゲームオーバー音 -->
+<audio
+    id="gameOverSound"
+    src="sounds/game_over.mp3"
+></audio>
+
+<!-- ラスボス登場 -->
+<audio
+    id="bossIntroSound"
+    src="sounds/boss_intro.mp3"
+></audio>
+
+<!-- ラスボスクリア -->
+<audio
+    id="bossClearSound"
+    src="sounds/boss_clear.mp3"
+></audio>
+
+
+<!-- ★ game.jsは1回だけ！ -->
+<script src="game.js"></script>
+
+</body>
+</html>

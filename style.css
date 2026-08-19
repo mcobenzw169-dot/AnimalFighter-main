@@ -1,0 +1,3121 @@
+/* ===========================
+   Animal Fighter
+   style.css Ver1.0
+=========================== */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+
+body {
+    min-height: 100vh;
+
+    font-family: "Yu Gothic", "Meiryo", sans-serif;
+
+    background:
+        linear-gradient(
+            #67c85d,
+            #214d1d
+        );
+
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    color: white;
+    text-align: center;
+}
+
+#game{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+#title{
+
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+
+    width:100%;
+    height:100vh;
+
+    margin-top:0;
+
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,0.25),
+            rgba(0,0,0,0.55)
+        ),
+        url("images/gamestart_background.png");
+
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+
+    color:white;
+}
+
+
+#title h1{
+    font-size:70px;
+    color:#ffe66d;
+
+    text-shadow:
+        0 0 15px #ffea00,
+        3px 3px 8px black;
+}
+
+#title h2{
+    color:white;
+    font-size:34px;
+    margin:15px 0;
+
+    text-shadow:
+        3px 3px 6px black;
+}
+
+#title p{
+    margin:20px 0;
+    font-size:24px;
+
+    text-shadow:
+        2px 2px 5px black;
+
+}
+
+
+button{
+
+    background:#ff9800;
+    color:white;
+    border:none;
+    border-radius:12px;
+    padding:15px 30px;
+    font-size:22px;
+    cursor:pointer;
+    transition:.2s;
+
+}
+
+#title button{
+
+    margin-top:35px;
+
+    width:300px;
+    height:80px;
+
+    font-size:34px;
+    font-weight:bold;
+
+    color:white;
+
+    border:none;
+    border-radius:18px;
+
+    background:linear-gradient(#ffb000,#ff6f00);
+
+    box-shadow:0 8px 20px rgba(0,0,0,.5);
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+#title button:hover{
+
+    transform:scale(1.08);
+
+    box-shadow:0 0 25px gold;
+}
+
+/* ===================
+   ステータス
+=================== */
+
+#status{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin:30px 0;
+
+}
+
+.statusBox{
+
+    width:32%;
+
+}
+
+.statusCenter{
+
+    width:20%;
+
+}
+
+.hpBar{
+
+    width:100%;
+
+    height:28px;
+
+    background:#444;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    border:3px solid white;
+
+}
+
+.hpGreen{
+
+    width:100%;
+
+    height:100%;
+
+    background:#43d854;
+
+    transition:.3s;
+
+}
+
+.hpRed{
+
+    width:100%;
+
+    height:100%;
+
+    background:#ff4c4c;
+
+    transition:.3s;
+
+}
+
+/* ===================
+ キャラクター
+=================== */
+
+.row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:30px;
+
+}
+
+.char{
+
+    width:300px;
+
+    height:300px;
+
+    background:rgba(255,255,255,.15);
+
+    border-radius:25px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:180px;
+
+    transition:.2s;
+
+}
+
+.enemy{
+
+    filter:brightness(.35);
+
+}
+
+/* ===================
+VS
+=================== */
+
+.vs{
+
+    font-size:64px;
+
+    font-weight:bold;
+
+    color:#ffe66d;
+
+}
+
+/* ===================
+コマンド
+=================== */
+
+.menu{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:25px;
+
+    width:100%;
+
+}
+
+.menu button{
+
+    width:220px;
+
+    height:65px;
+
+}
+
+/* ===================
+ログ
+=================== */
+
+#log{
+
+    margin-top:30px;
+
+    font-size:26px;
+
+    min-height:60px;
+
+    color:#fff799;
+
+}
+
+/* ===================
+アニメーション
+=================== */
+
+.attack{
+
+    transform:translateX(-60px) scale(1.15);
+
+}
+
+.shake{
+
+    animation:shake .3s;
+
+}
+
+@keyframes shake{
+
+0%{transform:translateX(0);}
+25%{transform:translateX(-15px);}
+50%{transform:translateX(15px);}
+75%{transform:translateX(-15px);}
+100%{transform:translateX(0);}
+
+}
+
+
+/* ダメージ表示 */
+#damageText{
+    position:absolute;
+    color:#ff3333;
+    font-size:40px;
+    font-weight:bold;
+    opacity:0;
+    pointer-events:none;
+}
+
+.damage{
+    animation:damagePop 0.8s;
+}
+
+@keyframes damagePop{
+
+    0%{
+        opacity:1;
+        transform:translateY(0px) scale(1);
+    }
+
+    100%{
+        opacity:0;
+        transform:translateY(-80px) scale(1.8);
+    }
+
+}
+
+.attack{
+    animation:attackMove .25s;
+}
+
+@keyframes attackMove{
+
+    0%{transform:translateX(0);}
+    50%{transform:translateX(-40px);}
+    100%{transform:translateX(0);}
+
+}
+
+.shake{
+    animation:shake .25s;
+}
+
+@keyframes shake{
+
+    0%{transform:translateX(0);}
+    25%{transform:translateX(-10px);}
+    50%{transform:translateX(10px);}
+    75%{transform:translateX(-10px);}
+    100%{transform:translateX(0);}
+
+}
+
+
+/* ------------------------------
+キャラクター画像
+------------------------------ */
+
+#playerImage,
+#enemyImage {
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+    display: block;
+}
+
+/* 敵を主人公の方向へ向ける */
+#enemyImage {
+    transform: scaleX(-1);
+}
+
+/* キャラクターの画像がはみ出さないようにする */
+.char {
+    position: relative;
+    width: 200px;
+    min-height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* ダメージ数字を画像より前に表示 */
+#damageText {
+    position: absolute;
+    z-index: 10;
+    top: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#playerImage,
+#enemyImage {
+    display: block;
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+}
+
+
+#titleLogo {
+
+    display: block;
+
+    width: min(95%, 600px);
+
+    height: auto;
+
+    margin: 0 auto 40px;
+
+    filter:
+        drop-shadow(0 0 15px rgba(255,255,255,0.4))
+        drop-shadow(0 0 30px rgba(255,215,0,0.5));
+
+}
+
+#playerImage,
+#enemyImage {
+    display: block;
+    width: min(38vw, 230px);
+    height: min(38vw, 230px);
+    object-fit: contain;
+    margin: auto;
+}
+
+.characterBox {
+    text-align: center;
+}
+
+.row {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 20px;
+}
+
+.statusArea {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    gap: 15px;
+}
+
+#battle {
+    display: none;
+    min-height: 100vh;
+    padding: 20px;
+    box-sizing: border-box;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.45)
+        ),
+        url("images/forest_dark.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+
+
+/* ===============================
+   ラスボス登場画面
+=============================== */
+#bossIntro {
+    display: none;
+    min-height: 100vh;
+    padding: 30px 15px;
+    box-sizing: border-box;
+    text-align: center;
+    color: white;
+    background:
+        radial-gradient(
+            circle,
+            rgba(120, 0, 0, 0.9),
+            rgba(0, 0, 0, 0.98)
+        );
+}
+
+.boss-intro-box {
+    width: min(90%, 700px);
+    margin: 40px auto;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    border: 4px solid #ffcc00;
+    border-radius: 24px;
+    background: rgba(0, 0, 0, 0.8);
+    box-shadow:
+        0 0 20px rgba(255, 0, 0, 0.8),
+        0 0 45px rgba(255, 204, 0, 0.5);
+}
+
+.boss-intro-box h2 {
+    margin-top: 0;
+    font-size: clamp(28px, 6vw, 52px);
+    color: #ffdd33;
+    text-shadow:
+        0 0 8px red,
+        3px 3px 0 black;
+}
+
+#bossIntroImage {
+    width: min(85%, 380px);
+    max-height: 420px;
+    object-fit: contain;
+    animation: bossFloat 1.8s ease-in-out infinite;
+    filter:
+        drop-shadow(0 0 12px red)
+        drop-shadow(0 0 25px black);
+}
+
+#bossIntroMessage {
+    margin: 20px auto;
+    font-size: clamp(18px, 4vw, 28px);
+    font-weight: bold;
+    line-height: 1.7;
+}
+
+.boss-intro-box button {
+    padding: 14px 28px;
+    border: 3px solid white;
+    border-radius: 999px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(#d90000, #720000);
+    box-shadow: 0 6px 0 #3c0000;
+}
+
+.boss-intro-box button:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #3c0000;
+}
+
+@keyframes bossFloat {
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-15px) scale(1.04);
+    }
+}
+
+
+/* ===============================
+   エンディング画面
+=============================== */
+#ending {
+    display: none;
+    min-height: 100vh;
+    padding: 30px 15px 60px;
+    box-sizing: border-box;
+    text-align: center;
+    color: #3f2b00;
+    background:
+        linear-gradient(
+            rgba(255, 255, 255, 0.35),
+            rgba(255, 255, 255, 0.35)
+        ),
+        linear-gradient(
+            #87ceeb,
+            #fff7a8,
+            #8fe388
+        );
+}
+
+.ending-box {
+    width: min(95%, 900px);
+    margin: 20px auto;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    border: 5px solid white;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.86);
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.25),
+        inset 0 0 25px rgba(255, 215, 0, 0.35);
+}
+
+.ending-box h1 {
+    margin-top: 0;
+    font-size: clamp(38px, 8vw, 72px);
+    color: #ff8c00;
+    text-shadow:
+        3px 3px 0 white,
+        5px 5px 0 #b45a00;
+}
+
+#endingMessage {
+    font-size: clamp(20px, 4vw, 30px);
+    font-weight: bold;
+    line-height: 1.7;
+}
+
+#endingFriends {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin: 25px auto;
+}
+
+.ending-character {
+    width: 120px;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 3px solid #ffd84d;
+    border-radius: 18px;
+    background: white;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+    animation: endingBounce 1.8s ease-in-out infinite;
+}
+
+.ending-character img {
+    width: 100%;
+    height: 90px;
+    object-fit: contain;
+}
+
+.ending-character p {
+    margin: 5px 0 0;
+    font-weight: bold;
+}
+
+.ending-character:nth-child(even) {
+    animation-delay: 0.3s;
+}
+
+.ending-character:nth-child(3n) {
+    animation-delay: 0.6s;
+}
+
+.ending-box button {
+    padding: 14px 30px;
+    border: 3px solid white;
+    border-radius: 999px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(#46c85a, #16872a);
+    box-shadow: 0 6px 0 #0d5b1a;
+}
+
+.ending-box button:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #0d5b1a;
+}
+
+@keyframes endingBounce {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-8px);
+    }
+}
+
+/* バトル開始ボタンの文字を上下左右の中央にする */
+#battleStartButton{
+
+    width:380px;
+    max-width:90%;
+
+    height:64px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    margin:25px auto 0;
+
+    padding:0;
+
+    font-size:28px;
+    font-weight:bold;
+
+    color:#fff;
+
+    background:#e05235;
+
+    border:none;
+    border-radius:14px;
+
+    line-height:1;
+
+    overflow:hidden;
+
+    cursor:pointer;
+}
+
+/* 主人公と仲間を同じくらいの大きさにする */
+.walking-character,
+.walking-friend {
+    width: 150px;
+    height: 150px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+/* 仲間にも歩く上下運動をつける */
+.walking-friend {
+    display: block;
+    animation: characterBounce 0.45s ease-in-out infinite alternate;
+}
+
+/* =========================
+   ショップのアイテム画像
+========================= */
+
+.shopItem img {
+    width: 200px;
+    height: 200px;
+    object-fit: contain;
+    display: block;
+    margin: 10px auto;
+}
+
+
+/* ===============================
+   バトル中の装備画像サイズ
+=============================== */
+
+.player-character {
+    position: relative;
+
+    width: 230px;
+    height: 230px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: visible;
+}
+
+
+/* すべての装備画像 */
+.player-character .equipment {
+    position: absolute;
+
+    display: none;
+
+    width: auto;
+    height: auto;
+
+    max-width: none;
+
+    object-fit: contain;
+
+    pointer-events: none;
+}
+
+
+/* 葉っぱ・鋼のヘルメット */
+.player-character .equipment-helmet {
+    width: 85px;
+    height: 85px;
+
+    top: 4px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 5;
+}
+
+
+/* 木の剣・鋼の剣 */
+.player-character .equipment-sword {
+    width: 100px;
+    height: 130px;
+
+    right: -25px;
+    bottom: 18px;
+
+    transform: rotate(-25deg);
+
+    z-index: 6;
+}
+
+
+/* 木の棒 */
+.player-character .equipment-stick {
+    width: 90px;
+    height: 125px;
+
+    right: -20px;
+    bottom: 18px;
+
+    transform: rotate(-25deg);
+
+    z-index: 6;
+}
+
+/* ===============================
+   隕石落下・暗黒化シーン
+=============================== */
+
+#meteorScene {
+    display: none;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,0.05),
+            rgba(255,255,255,0.05)
+        ),
+        url("images/forest.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transition:
+        background-image 1.5s ease,
+        filter 1.5s ease;
+}
+
+/* 暗黒の森へ変わる */
+#meteorScene.darkForest {
+    background-image:
+        linear-gradient(
+            rgba(0,0,0,0.45),
+            rgba(0,0,0,0.65)
+        ),
+        url("images/forest_dark.png");
+}
+
+/* 隕石 */
+#meteorImage {
+    position: absolute;
+
+    width: 180px;
+    height: 180px;
+    object-fit: contain;
+
+    top: -220px;
+    right: -180px;
+
+    opacity: 0;
+
+    filter:
+        drop-shadow(0 0 15px #7b00ff)
+        drop-shadow(0 0 30px #000);
+
+    z-index: 5;
+}
+
+/* 隕石が落ちる動き */
+#meteorImage.meteor-fall {
+    animation: meteorFall 2.2s ease-in forwards;
+}
+
+@keyframes meteorFall {
+
+    0% {
+        top: -220px;
+        right: -180px;
+        opacity: 1;
+        transform: scale(0.5) rotate(0deg);
+    }
+
+    70% {
+        top: 55%;
+        right: 45%;
+        opacity: 1;
+        transform: scale(1.1) rotate(320deg);
+    }
+
+    100% {
+        top: 68%;
+        right: 47%;
+        opacity: 0;
+        transform: scale(1.8) rotate(520deg);
+    }
+}
+
+/* 画面のメッセージ */
+.meteor-message {
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 90%;
+    text-align: center;
+
+    font-size: clamp(26px, 5vw, 48px);
+    font-weight: bold;
+
+    color: white;
+
+    text-shadow:
+        3px 3px 6px black,
+        0 0 12px black;
+
+    z-index: 10;
+}
+
+/* 隕石衝突時の白い光 */
+#impactFlash {
+    position: absolute;
+    inset: 0;
+
+    background: white;
+
+    opacity: 0;
+    pointer-events: none;
+
+    z-index: 20;
+}
+
+#impactFlash.flash {
+    animation: impactFlash 0.8s ease-out;
+}
+
+@keyframes impactFlash {
+
+    0% {
+        opacity: 0;
+    }
+
+    25% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+/* 暗黒化したときの揺れ */
+#meteorScene.impact-shake {
+    animation: sceneShake 0.6s;
+}
+
+@keyframes sceneShake {
+
+    0% {
+        transform: translate(0, 0);
+    }
+
+    20% {
+        transform: translate(-12px, 8px);
+    }
+
+    40% {
+        transform: translate(12px, -8px);
+    }
+
+    60% {
+        transform: translate(-8px, 5px);
+    }
+
+    80% {
+        transform: translate(8px, -5px);
+    }
+
+    100% {
+        transform: translate(0, 0);
+    }
+}
+
+/* =========================
+   ショップアイテムを横並び
+========================= */
+
+.shopItems {
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+
+    flex-wrap: wrap;
+
+    gap: 20px;
+
+    margin-top: 30px;
+
+}
+
+/* ショップの商品を横並びにする */
+.shopItems {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(170px, 1fr));
+    gap: 20px;
+    align-items: stretch;
+    margin: 30px auto;
+}
+
+/* 全商品カードを同じ大きさにする */
+.shopItem {
+    width: 100%;
+    min-width: 0;
+    padding: 15px;
+    border-radius: 18px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #222;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 商品画像を統一 */
+.shopItem img {
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 10px;
+}
+
+/* 購入ボタンをカード下部にそろえる */
+.shopItem button {
+    margin-top: auto;
+}
+
+/* 小さい画面 */
+@media (max-width: 900px) {
+    .shopItems {
+        grid-template-columns: repeat(2, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 500px) {
+    .shopItems {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+/* ===============================
+   敵の出現シーン
+=============================== */
+
+#enemyIntroScene {
+    display: none;
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+    padding: 30px;
+    box-sizing: border-box;
+
+    color: white;
+    text-align: center;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.45),
+            rgba(0, 0, 0, 0.65)
+        ),
+        url("images/forest_dark.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+#enemyIntroStage {
+    position: relative;
+    z-index: 10;
+
+    font-size: clamp(30px, 5vw, 52px);
+    color: #ffe66d;
+
+    text-shadow:
+        3px 3px 5px black,
+        0 0 15px #7b00ff;
+}
+
+.enemy-intro-area {
+    position: relative;
+    width: 100%;
+    height: 520px;
+    overflow: hidden;
+}
+
+/* 最初は森の奥に隠す */
+#enemyIntroImage {
+    position: absolute;
+    left: 50%;
+    bottom: 20px;
+
+    width: min(55vw, 360px);
+    height: min(55vw, 360px);
+    object-fit: contain;
+
+    opacity: 0;
+    filter:
+        brightness(0.15)
+        blur(5px)
+        drop-shadow(0 0 20px #7b00ff);
+
+    transform:
+        translateX(-50%)
+        translateY(-80px)
+        scale(0.3);
+
+    z-index: 5;
+}
+
+/* 森の奥から現れる動き */
+#enemyIntroImage.enemy-appear {
+    animation: enemyAppear 2.5s ease-out forwards;
+}
+
+@keyframes enemyAppear {
+
+    0% {
+        opacity: 0;
+        filter:
+            brightness(0.1)
+            blur(8px);
+
+        transform:
+            translateX(-50%)
+            translateY(-100px)
+            scale(0.25);
+    }
+
+    45% {
+        opacity: 0.55;
+        filter:
+            brightness(0.25)
+            blur(4px)
+            drop-shadow(0 0 20px #7b00ff);
+
+        transform:
+            translateX(-50%)
+            translateY(-45px)
+            scale(0.65);
+    }
+
+    100% {
+        opacity: 1;
+        filter:
+            brightness(0.55)
+            blur(0)
+            drop-shadow(0 0 25px #7b00ff);
+
+        transform:
+            translateX(-50%)
+            translateY(0)
+            scale(1);
+    }
+}
+
+#enemyIntroMessage {
+    position: relative;
+    z-index: 10;
+
+    min-height: 45px;
+
+    font-size: clamp(21px, 4vw, 32px);
+    font-weight: bold;
+
+    color: #fff799;
+
+    text-shadow:
+        3px 3px 5px black,
+        0 0 10px black;
+}
+
+/* 地面付近の暗い霧 */
+#enemyIntroSmoke {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: 0;
+
+    height: 130px;
+
+    background:
+        radial-gradient(
+            ellipse at center,
+            rgba(110, 40, 160, 0.65),
+            rgba(0, 0, 0, 0)
+        );
+
+    filter: blur(15px);
+    opacity: 0;
+
+    z-index: 3;
+}
+
+#enemyIntroSmoke.smoke-appear {
+    animation: smokeAppear 2.5s ease-out forwards;
+}
+
+@keyframes smokeAppear {
+
+    0% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+
+    100% {
+        opacity: 0.9;
+        transform: scale(1.3);
+    }
+}
+
+/* ===============================
+   仲間加入・森を歩く画面 完全版
+=============================== */
+
+#companionScene {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    width: 100vw;
+    min-height: 100vh;
+
+    padding: 25px;
+    box-sizing: border-box;
+
+    overflow: hidden;
+
+    color: white;
+    text-align: center;
+
+    background-color: #07140d;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.60)
+        ),
+        url("images/forest_dark.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+.companion-scene-box {
+    position: relative;
+    z-index: 2;
+
+    width: min(100%, 1000px);
+    min-height: calc(100vh - 50px);
+
+    margin: 0 auto;
+    padding: 15px;
+
+    box-sizing: border-box;
+}
+
+
+#companionTitle {
+    margin: 0 0 12px;
+
+    font-size: clamp(28px, 5vw, 40px);
+    color: #fff16a;
+
+    text-shadow:
+        3px 3px 5px black,
+        0 0 12px black;
+}
+
+
+#companionMessage {
+    min-height: 36px;
+    margin: 0 0 15px;
+
+    font-size: clamp(19px, 3vw, 25px);
+    font-weight: bold;
+
+    text-shadow:
+        2px 2px 4px black;
+}
+
+
+/* キャラクターが歩く場所 */
+.forestWalkArea {
+    position: relative;
+
+    width: 100%;
+    height: 400px;
+
+    margin: 20px auto;
+    overflow: hidden;
+
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    border-radius: 24px;
+
+    background: rgba(0, 0, 0, 0.12);
+}
+
+
+/* 主人公と仲間のグループ */
+#walkingParty {
+    position: absolute;
+
+    left: calc(100% + 100px);
+    bottom: 35px;
+
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+
+    white-space: nowrap;
+
+    animation:
+        partyWalk 15s linear infinite;
+}
+
+
+/* 主人公トカゲ */
+#walkingLizard,
+.walking-character {
+    display: block;
+
+    width: 130px;
+    height: 130px;
+
+    object-fit: contain;
+    flex-shrink: 0;
+
+    animation:
+        characterBounce 0.45s
+        ease-in-out infinite alternate;
+}
+
+
+/* 仲間を横並びにする */
+#walkingFriends {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+
+/* 仲間画像 */
+.walking-friend {
+    display: block;
+
+    width: 130px;
+    height: 130px;
+
+    object-fit: contain;
+    flex-shrink: 0;
+
+    animation:
+        characterBounce 0.45s
+        ease-in-out infinite alternate;
+}
+
+
+/* 右から左へ進む */
+@keyframes partyWalk {
+
+    from {
+        left: calc(100% + 100px);
+    }
+
+    to {
+        left: -1800px;
+    }
+}
+
+
+/* 歩く上下運動 */
+@keyframes characterBounce {
+
+    from {
+        transform: translateY(0);
+    }
+
+    to {
+        transform: translateY(-10px);
+    }
+}
+
+
+.walkText {
+    margin: 15px 0;
+
+    font-size: clamp(18px, 3vw, 23px);
+    font-weight: bold;
+
+    text-shadow:
+        2px 2px 4px black;
+}
+
+
+#companionScene button {
+    padding: 15px 30px;
+
+    border: none;
+    border-radius: 15px;
+
+    color: white;
+    background: #ff9800;
+
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+
+#companionScene button:hover {
+    transform: scale(1.05);
+}
+
+
+/* スマホ用 */
+@media (max-width: 600px) {
+
+    #companionScene {
+        padding: 15px;
+    }
+
+    .forestWalkArea {
+        height: 330px;
+    }
+
+    #walkingLizard,
+    .walking-character,
+    .walking-friend {
+        width: 95px;
+        height: 95px;
+    }
+}
+
+
+/* ===============================
+   ストーリー画面 修正版
+=============================== */
+
+#story {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+
+    width: 100vw;
+    min-height: 100vh;
+
+    padding: 30px 15px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+
+    text-align: center;
+
+    background-color: #07140d;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.55)
+        ),
+        url("images/forest.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+/* 説明文の白い枠 */
+#story .story-box {
+    width: min(90%, 760px);
+
+    margin: 20px auto;
+    padding: 25px 30px;
+
+    box-sizing: border-box;
+
+    color: #222;
+
+    background: rgba(255, 255, 255, 0.92);
+
+    border: 4px solid #4c7a3d;
+    border-radius: 22px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.45);
+}
+
+
+#story .story-box h2 {
+    margin: 0 0 12px;
+
+    color: #3c245c;
+
+    font-size: clamp(26px, 4vw, 36px);
+}
+
+
+#story .story-box p {
+    margin: 8px 0;
+
+    color: #222;
+
+    font-size: clamp(16px, 2.2vw, 20px);
+    line-height: 1.65;
+}
+
+
+#story .story-important {
+    margin: 15px 0;
+    padding: 12px;
+
+    color: #8a1717 !important;
+    font-weight: bold;
+
+    background: #fff3c4;
+
+    border-radius: 12px;
+}
+
+
+/* 冒険をはじめるボタンを小さくする */
+#battleStartButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: min(90%, 380px);
+    height: 64px;
+
+    margin: 20px auto 0;
+    padding: 0 20px;
+
+    color: white;
+    background: linear-gradient(
+        #f15b3a,
+        #c93722
+    );
+
+    border: 3px solid white;
+    border-radius: 16px;
+
+    font-size: clamp(21px, 3vw, 28px);
+    font-weight: bold;
+    line-height: 1;
+
+    box-shadow:
+        0 7px 0 #812416,
+        0 10px 20px rgba(0, 0, 0, 0.35);
+
+    cursor: pointer;
+}
+
+
+#battleStartButton:hover {
+    transform: scale(1.04);
+}
+
+
+#battleStartButton:active {
+    transform: translateY(4px);
+    box-shadow:
+        0 3px 0 #812416,
+        0 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+
+/* スマホ用 */
+@media (max-width: 600px) {
+
+    #story {
+        padding: 15px 10px;
+    }
+
+    #story .story-box {
+        width: 96%;
+        padding: 20px 15px;
+    }
+
+    #battleStartButton {
+        width: min(92%, 330px);
+        height: 58px;
+    }
+}
+
+/* バトル中アイテムアイコン */
+#bananaButton img,
+#healFruitButton img,
+#specialFruitButton img,
+#barrierFruitButton img,
+#rainbowBarrierButton img{
+
+    width:40px;
+    height:40px;
+    object-fit:contain;
+
+    margin-right:8px;
+}
+/* ===============================
+   ラスボス戦・仲間全員集合
+=============================== */
+
+.boss-companion-commands {
+    display: none;
+
+    position: relative;
+
+    width: min(96%, 1050px);
+
+    margin: 22px auto;
+    padding: 18px;
+
+    border: 3px solid #ffe66d;
+    border-radius: 22px;
+
+    background: rgba(15, 8, 35, 0.88);
+
+    box-shadow:
+        0 0 18px rgba(255, 230, 109, 0.55),
+        inset 0 0 20px rgba(120, 60, 180, 0.25);
+}
+
+.boss-companion-commands h3 {
+    margin: 0 0 8px;
+
+    color: #ffe66d;
+
+    font-size: clamp(24px, 4vw, 32px);
+
+    text-shadow:
+        2px 2px 4px black,
+        0 0 10px #7b00ff;
+}
+
+#bossCompanionMessage {
+    margin: 5px 0 15px;
+
+    font-size: 19px;
+    font-weight: bold;
+
+    color: white;
+}
+
+
+/* 仲間全員を横並び */
+#bossCompanionParty {
+    position: relative;
+
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    min-height: 120px;
+
+    margin: 12px auto 18px;
+    padding: 10px;
+
+    border-radius: 18px;
+
+    background: rgba(255, 255, 255, 0.08);
+}
+
+
+/* 仲間1匹 */
+.boss-party-friend {
+    position: relative;
+
+    width: 90px;
+    height: 90px;
+
+    object-fit: contain;
+
+    flex-shrink: 0;
+
+    filter:
+        drop-shadow(0 5px 5px rgba(0, 0, 0, 0.65));
+
+    transition:
+        transform 0.25s ease,
+        filter 0.25s ease,
+        opacity 0.25s ease;
+}
+
+
+/* 選ばれた仲間 */
+.boss-party-friend.selected {
+    filter:
+        brightness(1.35)
+        drop-shadow(0 0 14px #ffe66d)
+        drop-shadow(0 0 25px #7b00ff);
+}
+
+
+/* 前へ飛び出して攻撃 */
+.boss-party-friend.companion-jump-attack {
+    z-index: 50;
+
+    animation:
+        companionJumpAttack 1.1s ease-in-out;
+}
+
+@keyframes companionJumpAttack {
+
+    0% {
+        transform:
+            translate(0, 0)
+            scale(1);
+    }
+
+    30% {
+        transform:
+            translate(170px, -90px)
+            scale(1.35)
+            rotate(-8deg);
+    }
+
+    55% {
+        transform:
+            translate(260px, -25px)
+            scale(1.5)
+            rotate(12deg);
+    }
+
+    75% {
+        transform:
+            translate(160px, -70px)
+            scale(1.25);
+    }
+
+    100% {
+        transform:
+            translate(0, 0)
+            scale(1);
+    }
+}
+
+
+/* 仲間選択ボタン */
+#bossCompanionButtons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    gap: 10px;
+}
+
+.companionAttackButton {
+    min-width: 135px;
+
+    padding: 10px 13px;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    border: 2px solid white;
+    border-radius: 12px;
+
+    color: white;
+
+    background:
+        linear-gradient(
+            #8a4bd6,
+            #4c207f
+        );
+
+    cursor: pointer;
+}
+
+.companionAttackButton:hover {
+    transform: scale(1.05);
+
+    box-shadow:
+        0 0 12px #ffe66d;
+}
+
+.companionAttackButton:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+
+/* 仲間の技名表示 */
+#companionSkillEffect {
+    position: fixed;
+
+    left: 50%;
+    top: 45%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 9999;
+
+    display: none;
+
+    width: min(90%, 650px);
+
+    padding: 18px;
+
+    border: 4px solid white;
+    border-radius: 20px;
+
+    color: white;
+
+    background:
+        rgba(30, 5, 55, 0.92);
+
+    font-size: clamp(25px, 5vw, 45px);
+    font-weight: bold;
+
+    text-align: center;
+
+    text-shadow:
+        3px 3px 5px black,
+        0 0 14px #ffe66d;
+
+    box-shadow:
+        0 0 25px #7b00ff;
+}
+
+#companionSkillEffect.show {
+    display: block;
+
+    animation:
+        companionSkillPop 0.9s ease;
+}
+
+@keyframes companionSkillPop {
+
+    0% {
+        opacity: 0;
+        transform:
+            translate(-50%, -50%)
+            scale(0.3);
+    }
+
+    45% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            scale(1.15);
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+    }
+}
+
+
+/* スマホ用 */
+@media (max-width: 600px) {
+
+    .boss-party-friend {
+        width: 62px;
+        height: 62px;
+    }
+
+    .companionAttackButton {
+        min-width: 115px;
+        font-size: 14px;
+    }
+
+    @keyframes companionJumpAttack {
+
+        0% {
+            transform:
+                translate(0, 0)
+                scale(1);
+        }
+
+        50% {
+            transform:
+                translate(80px, -70px)
+                scale(1.35);
+        }
+
+        100% {
+            transform:
+                translate(0, 0)
+                scale(1);
+        }
+    }
+}
+
+
+/* ===============================
+   トカゲの技
+=============================== */
+
+.attackMenu{
+
+    background:#5d1f1f;
+
+    border:4px solid #ff5b5b;
+
+    border-radius:20px;
+
+    padding:18px;
+
+    margin-bottom:20px;
+
+}
+
+.attackMenu h3{
+
+    color:#fff;
+
+    margin-bottom:15px;
+
+}
+
+
+/* ===============================
+   所持アイテム
+=============================== */
+
+.itemMenu{
+
+    background:#1d5428;
+
+    border:4px solid #57ff80;
+
+    border-radius:20px;
+
+    padding:18px;
+
+}
+
+.itemMenu h3{
+
+    color:#fff;
+
+    margin-bottom:15px;
+
+}
+
+
+/* ボタンを見やすくする */
+
+.attackMenu button{
+
+    background:#d94141;
+
+}
+
+.itemMenu button{
+
+    background:#2eb84c;
+
+}
+
+.attackMenu button,
+.itemMenu button{
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    border:none;
+
+    border-radius:12px;
+
+    margin:6px;
+
+    padding:12px 18px;
+
+    cursor:pointer;
+
+}
+
+.attackMenu button:hover{
+
+    background:#ff5d5d;
+
+}
+
+.itemMenu button:hover{
+
+    background:#44d868;
+
+}
+
+
+.attackMenu{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:15px;
+
+}
+
+.itemMenu{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    justify-content:center;
+
+    gap:15px;
+
+}
+
+/* 攻撃・アイテムを左右に分ける */
+.menu {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.attackMenu,
+.itemMenu {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+
+    padding: 16px;
+    border-radius: 18px;
+}
+
+.attackMenu {
+    background: #6f2222;
+    border: 3px solid #ff5b5b;
+}
+
+.itemMenu {
+    background: #155728;
+    border: 3px solid #51ff79;
+}
+
+.attackMenu h3,
+.itemMenu h3 {
+    grid-column: 1 / -1;
+    margin: 0 0 8px;
+    text-align: center;
+}
+
+.attackMenu button,
+.itemMenu button {
+    width: 100%;
+    height: 52px;
+    padding: 8px 10px;
+
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 11px;
+}
+
+.attackMenu button {
+    background: #df4444;
+}
+
+.itemMenu button {
+    background: #2fbd50;
+}
+
+/* ===============================
+   平和な森のエンディング
+=============================== */
+
+#ending {
+    display: none;
+
+    min-height: 100vh;
+    padding: 30px 15px 60px;
+
+    color: #3b2a00;
+    text-align: center;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.25),
+            rgba(255, 255, 255, 0.35)
+        ),
+        url("images/forest.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+
+.ending-box {
+    width: min(95%, 1000px);
+
+    margin: 20px auto;
+    padding: 30px 20px;
+
+    border: 5px solid white;
+    border-radius: 28px;
+
+    background:
+        rgba(255, 255, 255, 0.88);
+
+    box-shadow:
+        0 10px 28px rgba(0, 0, 0, 0.3);
+}
+
+
+.ending-tiger-area {
+    width: min(92%, 650px);
+
+    margin: 25px auto;
+    padding: 20px;
+
+    border: 4px solid #ffd84d;
+    border-radius: 24px;
+
+    background:
+        rgba(255, 248, 190, 0.92);
+
+    box-shadow:
+        0 0 20px rgba(255, 200, 0, 0.45);
+}
+
+
+#endingTiger {
+    width: min(70%, 320px);
+    height: 260px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(0 8px 10px rgba(0, 0, 0, 0.3));
+
+    animation:
+        endingTigerBounce 1.8s
+        ease-in-out infinite;
+}
+
+
+#endingFriends {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    gap: 14px;
+
+    margin: 25px auto;
+}
+
+
+.ending-character {
+    width: 120px;
+    padding: 10px;
+
+    border: 3px solid #ffd84d;
+    border-radius: 18px;
+
+    background: white;
+
+    box-shadow:
+        0 5px 12px rgba(0, 0, 0, 0.2);
+
+    animation:
+        endingBounce 1.8s
+        ease-in-out infinite;
+}
+
+
+.ending-character img {
+    width: 100%;
+    height: 90px;
+
+    object-fit: contain;
+}
+
+
+.ending-tiger-card {
+    border-color: #ff9d2e;
+
+    background:
+        linear-gradient(
+            #fff9d6,
+            #ffd98a
+        );
+}
+
+
+.ending-final-message {
+    margin: 25px auto;
+
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: bold;
+    line-height: 1.8;
+
+    color: #4b3700;
+}
+
+
+@keyframes endingTigerBounce {
+
+    0%,
+    100% {
+        transform:
+            translateY(0)
+            scale(1);
+    }
+
+    50% {
+        transform:
+            translateY(-10px)
+            scale(1.03);
+    }
+}
+
+
+@media (max-width: 600px) {
+
+    .ending-character {
+        width: 90px;
+    }
+
+    .ending-character img {
+        height: 70px;
+    }
+
+    #endingTiger {
+        height: 210px;
+    }
+}
+
+
+/* 攻撃できなくなった仲間 */
+.boss-party-friend.companion-unavailable {
+    opacity: 0.25;
+
+    filter:
+        grayscale(1)
+        brightness(0.55);
+
+    transform:
+        scale(0.88);
+}
+
+
+/* 攻撃できない仲間のボタン */
+.companion-unavailable-button {
+    opacity: 0.35 !important;
+
+    color: #dddddd !important;
+
+    background:
+        linear-gradient(
+            #555555,
+            #222222
+        ) !important;
+
+    cursor: not-allowed !important;
+}
+
+
+/* ===============================
+   暗黒トラが元に戻るラスト演出
+=============================== */
+
+#tigerRescueScene {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+
+    width: 100vw;
+    min-height: 100vh;
+
+    padding: 25px;
+    box-sizing: border-box;
+
+    overflow-y: auto;
+
+    color: white;
+    text-align: center;
+
+    background-image:
+        linear-gradient(
+            rgba(0, 0, 0, 0.58),
+            rgba(0, 0, 0, 0.72)
+        ),
+        url("images/forest_dark.png");
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    transition:
+        background-image 2.5s ease;
+}
+
+
+.tiger-rescue-box {
+    width: min(96%, 1000px);
+
+    margin: 0 auto;
+    padding: 20px;
+
+    box-sizing: border-box;
+}
+
+
+#tigerRescueTitle {
+    margin: 5px 0 12px;
+
+    color: #ffe766;
+
+    font-size: clamp(28px, 5vw, 48px);
+
+    text-shadow:
+        3px 3px 6px black,
+        0 0 16px #8d49ff;
+}
+
+
+#tigerTransformArea {
+    position: relative;
+
+    width: min(95%, 720px);
+    height: 430px;
+
+    margin: 15px auto;
+
+    overflow: hidden;
+
+    border: 4px solid rgba(255, 255, 255, 0.35);
+    border-radius: 28px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(110, 38, 160, 0.55),
+            rgba(0, 0, 0, 0.35)
+        );
+}
+
+
+#endingDarkTiger,
+#endingNormalTiger {
+    position: absolute;
+
+    left: 50%;
+    bottom: 20px;
+
+    width: min(75%, 390px);
+    height: 370px;
+
+    object-fit: contain;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 5;
+}
+
+
+#endingDarkTiger {
+    filter:
+        brightness(0.48)
+        drop-shadow(0 0 20px #7b00ff)
+        drop-shadow(0 0 35px black);
+}
+
+
+#endingNormalTiger {
+    display: none;
+
+    opacity: 0;
+
+    filter:
+        brightness(1.15)
+        drop-shadow(0 0 20px white)
+        drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+}
+
+
+/* 暗黒トラが消える */
+#endingDarkTiger.dark-tiger-fade {
+    animation:
+        darkTigerFade 3.4s ease forwards;
+}
+
+
+@keyframes darkTigerFade {
+
+    0% {
+        opacity: 1;
+
+        filter:
+            brightness(0.45)
+            drop-shadow(0 0 25px #7b00ff);
+
+        transform:
+            translateX(-50%)
+            scale(1);
+    }
+
+    45% {
+        opacity: 0.85;
+
+        filter:
+            brightness(1.9)
+            drop-shadow(0 0 45px white);
+
+        transform:
+            translateX(-50%)
+            scale(1.08);
+    }
+
+    100% {
+        opacity: 0;
+
+        filter:
+            brightness(3)
+            blur(5px);
+
+        transform:
+            translateX(-50%)
+            scale(0.92);
+    }
+}
+
+
+/* 普通のトラが現れる */
+#endingNormalTiger.normal-tiger-appear {
+    animation:
+        normalTigerAppear 2.3s ease forwards;
+}
+
+
+@keyframes normalTigerAppear {
+
+    0% {
+        opacity: 0;
+
+        transform:
+            translateX(-50%)
+            scale(0.6);
+
+        filter:
+            brightness(3)
+            blur(8px);
+    }
+
+    55% {
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            scale(1.08);
+
+        filter:
+            brightness(1.8)
+            blur(1px)
+            drop-shadow(0 0 30px white);
+    }
+
+    100% {
+        opacity: 1;
+
+        transform:
+            translateX(-50%)
+            scale(1);
+
+        filter:
+            brightness(1.08)
+            drop-shadow(0 8px 12px rgba(0, 0, 0, 0.35));
+    }
+}
+
+
+/* 光 */
+#tigerEndingLight {
+    position: absolute;
+    inset: 0;
+
+    z-index: 10;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255, 255, 255, 1),
+            rgba(255, 240, 145, 0.7),
+            rgba(255, 255, 255, 0)
+        );
+}
+
+
+#tigerEndingLight.ending-light-active {
+    animation:
+        tigerEndingLight 3.5s ease;
+}
+
+
+@keyframes tigerEndingLight {
+
+    0% {
+        opacity: 0;
+        transform: scale(0.25);
+    }
+
+    45% {
+        opacity: 1;
+        transform: scale(1.25);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(2);
+    }
+}
+
+
+#tigerRescueMessage {
+    min-height: 42px;
+
+    margin: 15px auto;
+
+    color: #fff7a1;
+
+    font-size: clamp(21px, 4vw, 31px);
+    font-weight: bold;
+
+    text-shadow:
+        3px 3px 5px black;
+}
+
+
+/* 会話 */
+#endingDialogue {
+    display: none;
+
+    width: min(94%, 760px);
+
+    margin: 18px auto;
+    padding: 18px;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+
+    border: 4px solid white;
+    border-radius: 24px;
+
+    background:
+        rgba(255, 255, 255, 0.93);
+
+    color: #222;
+
+    box-shadow:
+        0 8px 22px rgba(0, 0, 0, 0.4);
+
+    animation:
+        endingDialogueAppear 0.7s ease;
+}
+
+
+#endingSpeakerImage {
+    width: 125px;
+    height: 125px;
+
+    object-fit: contain;
+}
+
+
+#endingDialogueText {
+    margin: 0;
+
+    font-size: clamp(18px, 3vw, 27px);
+    font-weight: bold;
+    line-height: 1.6;
+
+    text-align: left;
+}
+
+
+@keyframes endingDialogueAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* 仲間集合 */
+#rescueEndingFriends {
+    display: none;
+
+    width: min(96%, 1000px);
+
+    margin: 20px auto;
+
+    justify-content: center;
+    align-items: flex-end;
+    flex-wrap: wrap;
+
+    gap: 8px;
+}
+
+
+.rescue-ending-character {
+    width: 105px;
+    height: 105px;
+
+    object-fit: contain;
+
+    animation:
+        rescueEndingCharacterAppear
+        1.2s ease both;
+
+    filter:
+        drop-shadow(0 6px 7px rgba(0, 0, 0, 0.4));
+}
+
+
+.rescue-ending-character:nth-child(even) {
+    animation-delay: 0.2s;
+}
+
+
+.rescue-ending-character:nth-child(3n) {
+    animation-delay: 0.4s;
+}
+
+
+.rescue-ending-tiger {
+    width: 140px;
+    height: 140px;
+
+    filter:
+        drop-shadow(0 0 15px #ffe05c);
+}
+
+
+@keyframes rescueEndingCharacterAppear {
+
+    0% {
+        opacity: 0;
+        transform:
+            translateY(70px)
+            scale(0.4);
+    }
+
+    65% {
+        opacity: 1;
+        transform:
+            translateY(-10px)
+            scale(1.08);
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+
+/* スマホ */
+@media (max-width: 600px) {
+
+    #tigerTransformArea {
+        height: 330px;
+    }
+
+    #endingDarkTiger,
+    #endingNormalTiger {
+        width: 270px;
+        height: 285px;
+    }
+
+    #endingDialogue {
+        flex-direction: column;
+    }
+
+    #endingDialogueText {
+        text-align: center;
+    }
+
+    .rescue-ending-character {
+        width: 72px;
+        height: 72px;
+    }
+
+    .rescue-ending-tiger {
+        width: 95px;
+        height: 95px;
+    }
+}
+
+
+/* =====================================
+   ラスボス戦ルール説明
+===================================== */
+
+#bossRuleScene {
+
+    min-height: 100vh;
+
+    padding: 30px 15px;
+
+    box-sizing: border-box;
+
+    background:
+        linear-gradient(
+            rgba(5, 5, 20, 0.82),
+            rgba(30, 0, 0, 0.88)
+        ),
+        url("images/castel_dark.png");
+
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+
+    text-align: center;
+}
+
+
+/* 説明全体 */
+.boss-rule-box {
+
+    width: min(950px, 94%);
+
+    margin: 0 auto;
+
+    padding: 30px;
+
+    box-sizing: border-box;
+
+    background:
+        rgba(0, 0, 0, 0.72);
+
+    border: 4px solid #ffd54a;
+
+    border-radius: 25px;
+
+    color: white;
+}
+
+
+/* 最終決戦 */
+.boss-rule-title {
+
+    margin: 0 0 10px;
+
+    font-size: clamp(
+        32px,
+        6vw,
+        60px
+    );
+
+    text-shadow:
+        0 0 10px #ff6600,
+        0 0 20px #ff0000;
+}
+
+
+/* 仲間と力を合わせよう */
+.boss-rule-subtitle {
+
+    font-size: clamp(
+        22px,
+        4vw,
+        36px
+    );
+
+    margin-bottom: 25px;
+}
+
+
+/* =====================================
+   トカゲ＋仲間
+===================================== */
+
+.boss-rule-party {
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 20px;
+
+    margin: 25px 0;
+
+    padding: 20px;
+
+    background:
+        rgba(255,255,255,0.1);
+
+    border-radius: 20px;
+}
+
+
+/* トカゲ */
+.boss-rule-player {
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    font-size: 20px;
+
+    font-weight: bold;
+}
+
+
+.boss-rule-player img {
+
+    width: 130px;
+    height: 130px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 5px 8px rgba(0,0,0,.7)
+        );
+}
+
+
+/* 仲間エリア */
+.boss-rule-friends {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 8px;
+}
+
+
+.boss-rule-friends img {
+
+    width: 70px;
+    height: 70px;
+
+    object-fit: contain;
+
+    filter:
+        drop-shadow(
+            0 4px 5px rgba(0,0,0,.7)
+        );
+}
+
+
+/* =====================================
+   戦い方説明
+===================================== */
+
+.boss-rule-description {
+
+    margin: 25px auto;
+
+    padding: 20px;
+
+    max-width: 760px;
+
+    background:
+        rgba(255,255,255,0.12);
+
+    border-radius: 20px;
+
+    font-size: clamp(
+        18px,
+        3vw,
+        26px
+    );
+
+    line-height: 1.7;
+}
+
+
+.boss-rule-description p {
+
+    margin: 10px 0;
+}
+
+
+/* 最後のメッセージ */
+.boss-rule-message {
+
+    margin: 25px 0;
+
+    font-size: clamp(
+        22px,
+        4vw,
+        34px
+    );
+
+    font-weight: bold;
+
+    line-height: 1.6;
+}
+
+
+/* バトル開始ボタン */
+.boss-rule-start-button {
+
+    padding: 16px 35px;
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    border: none;
+
+    border-radius: 15px;
+
+    cursor: pointer;
+}
+
+/* ===============================
+   バトル中：攻撃可能キャラの強調
+=============================== */
+
+/* 共通 */
+.battle-active {
+    animation: battleGlow 1.2s ease-in-out infinite;
+    filter:
+        drop-shadow(0 0 8px rgba(255,255,255,0.9))
+        drop-shadow(0 0 16px rgba(255,230,80,0.8));
+}
+
+.battle-inactive {
+    opacity: 0.55;
+    filter: brightness(0.7);
+}
+
+
+/* 光って少し大きくなる */
+@keyframes battleGlow {
+
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* ===============================
+   ストーリー画面のメイン画像
+=============================== */
+
+#storyMainImage {
+
+    display: block;
+
+    width: 92%;
+    max-width: 900px;
+
+    height: auto;
+
+    margin: 0 auto 25px;
+
+    border-radius: 18px;
+
+    box-shadow:
+        0 0 14px rgba(255,255,255,0.35),
+        0 0 28px rgba(120,80,255,0.35);
+}
+
+
+/* ===============================
+   ストーリー画像
+================================ */
+
+.story-image-area {
+
+    position: relative;
+
+    width: 95%;
+    max-width: 1000px;
+
+    margin: 20px auto;
+}
+
+
+#storyMainImage {
+
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    border-radius: 18px;
+}
+
+
+/* ===============================
+   右上：スキップ
+================================ */
+
+.story-image-skip {
+
+    position: absolute;
+
+    top: 3%;
+    right: 3%;
+
+    width: 16%;
+    height: 8%;
+
+    /* 透明にする */
+    background: transparent;
+
+    border: none;
+
+    cursor: pointer;
+
+    z-index: 10;
+}
+
+
+/* ===============================
+   右下：戦いに出る！
+================================ */
+
+.story-image-start {
+
+    position: absolute;
+
+    right: 3%;
+    bottom: 5%;
+
+    width: 30%;
+    height: 11%;
+
+    /* 透明にする */
+    background: transparent;
+
+    border: none;
+
+    cursor: pointer;
+
+    z-index: 10;
+}
+
+
+/* スマホでタップしやすくする */
+.story-image-skip,
+.story-image-start {
+
+    touch-action: manipulation;
+}
