@@ -4480,6 +4480,17 @@ document.addEventListener(
     "DOMContentLoaded",
     () => {
 
+        // 最初は全部の画面を隠す
+        hideAllScreens();
+
+        // タイトル画面だけ表示
+        const titleScreen =
+            document.getElementById("title");
+
+        if (titleScreen) {
+            titleScreen.style.display = "flex";
+        }
+
         updateCoin();
         updateInventory();
         updateEquipmentDisplay();
