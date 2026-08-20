@@ -1454,13 +1454,18 @@ VS
 }
 
 
-/* ===============================
-   ショップ 所持コイン表示（PC）
-=============================== */
-
 .shopCoin {
     font-size: 24px;
     font-weight: bold;
+
+    background: rgba(0, 0, 0, 0.65);
+    color: white;
+
+    padding: 10px 20px;
+    border-radius: 12px;
+
+    width: fit-content;
+    margin: 10px auto;
 }
 
 /* スマホ用 */
@@ -3381,16 +3386,22 @@ VS
    ===================== */
 
 .shopCoin {
-    position: sticky;
-    top: 0;
+    position: fixed;
 
-    z-index: 999;
+    top: 10px;
+    left: 50%;
 
-    width: fit-content;
-    margin: 8px auto 12px;
+    transform: translateX(-50%);
+
+    z-index: 9999;
+
+    width: auto;
+    min-width: 190px;
+
+    margin: 0;
     padding: 10px 18px;
 
-    background: rgba(20, 70, 25, 0.95);
+    background: rgba(20, 70, 25, 0.96);
 
     border: 3px solid #ffd84d;
     border-radius: 999px;
@@ -3403,7 +3414,6 @@ VS
     box-shadow:
         0 4px 12px rgba(0, 0, 0, 0.45);
 }
-
 
     /* =====================
        メッセージ
