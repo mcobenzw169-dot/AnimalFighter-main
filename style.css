@@ -3647,3 +3647,43 @@ VS
         transform: translateX(-10px);
     }
 }
+
+/* ===============================
+   ラスボス説明画面
+   仲間をスマホで見やすく並べる
+=============================== */
+
+#bossRuleFriends {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    max-width: 420px;
+    margin: 10px auto;
+    align-items: center;
+    justify-items: center;
+}
+
+#bossRuleFriends img {
+    width: 65px;
+    height: 65px;
+    object-fit: contain;
+}
+
+
+/* ===============================
+   スマホ
+=============================== */
+@media (max-width: 600px) {
+
+    #bossRuleFriends {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+        margin: 8px auto;
+    }
+
+    #bossRuleFriends img {
+        width: 52px;
+        height: 52px;
+    }
+}
