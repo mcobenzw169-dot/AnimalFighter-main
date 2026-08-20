@@ -2448,8 +2448,11 @@ function openShop() {
 
 
     updateCoin();
-    updateInventory();
-    updateShopButtons();
+updateInventory();
+updateShopButtons();
+
+// ショップを開くたびにメッセージを初期化
+showShopMessage("アイテムを選んでね！");
 
 }
 
