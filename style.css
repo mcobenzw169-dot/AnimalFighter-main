@@ -3602,3 +3602,48 @@ VS
         touch-action: manipulation;
     }
 }
+
+/* ===============================
+   敵の必殺技 前兆
+=============================== */
+
+.special-charge {
+    animation: specialCharge 0.18s infinite alternate;
+}
+
+@keyframes specialCharge {
+
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    100% {
+        transform: scale(1.08);
+        filter: brightness(1.8);
+    }
+}
+
+
+/* ===============================
+   必殺技をくらったトカゲ
+=============================== */
+
+.special-hit {
+    animation: specialHitShake 0.08s 7;
+}
+
+@keyframes specialHitShake {
+
+    0% {
+        transform: translateX(-10px);
+    }
+
+    50% {
+        transform: translateX(10px);
+    }
+
+    100% {
+        transform: translateX(-10px);
+    }
+}

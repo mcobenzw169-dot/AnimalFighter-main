@@ -7,6 +7,7 @@
 // ゲーム進行
 // ------------------------------
 let currentStage = 0;
+let enemySpecialUsed = false;
 let playerTurn = true;
 let gameFinished = false;
 
@@ -763,6 +764,7 @@ function startCurrentBattle() {
 // ステージを読み込む
 // ===============================
 function loadStage() {
+    enemySpecialUsed = false;
 
     const stageData = stages[currentStage];
 
@@ -1103,6 +1105,33 @@ function attack(type) {
     disableButtons();
     disableCompanionButtons();
 
+// ===============================
+// かめには「かみつく」が効かない
+// ===============================
+if (
+    type === "bite" &&
+    stages[currentStage].name === "暗黒かめ"
+) {
+
+    showMessage(
+        "🐢 甲羅が固くて、かみつく攻撃が効かない！"
+    );
+
+    // エラー効果音
+    const errorSound =
+        new Audio("sounds/error.mp3");
+
+    errorSound.play();
+
+    // 攻撃ターンは消費しない
+    playerTurn = true;
+
+    enableButtons();
+
+    updateBattleItemButtons();
+
+    return;
+}
 
     let damage = 0;
     let attackName = "";
@@ -1408,11 +1437,93 @@ battle.style.backgroundPosition = "center";
 battle.style.backgroundRepeat = "no-repeat";
 
 
-    let damage =
-        randomNumber(
-            stageData.attackMin,
-            stageData.attackMax
+    // ===============================
+// 敵のダメージ決定
+// ===============================
+let damage = randomNumber(
+    stageData.attackMin,
+    stageData.attackMax
+);
+
+let specialAttackName = "";
+let isSpecialAttack = false;
+
+// ===============================
+// いぬ ～ くま
+// 敵の必殺技
+// 1バトルに1回
+// ===============================
+const enemySpecialDamage = {
+    "いぬ": 50,
+    "ねこ": 100,
+    "さる": 150,
+    "しか": 200,
+    "いのしし": 250,
+    "ダチョウ": 300,
+    "くま": 350
+};
+
+
+// 敵の名前から「暗黒」を取る
+const enemyAnimalName =
+    enemy.name.replace("暗黒", "");
+
+
+// この敵が必殺技を持っているか確認
+const specialDamage =
+    enemySpecialDamage[enemyAnimalName];
+
+
+if (
+    specialDamage &&
+    !enemySpecialUsed
+) {
+
+    const skill =
+        getCompanionSkill(enemyAnimalName);
+
+    enemySpecialUsed = true;
+
+    damage = specialDamage;
+
+    specialAttackName =
+        skill.name;
+
+    isSpecialAttack = true;
+
+    // ===============================
+    // 必殺技の前兆
+    // ===============================
+    showMessage(
+        `⚠️ ${enemy.name}が力をためている……！`
+    );
+
+    const enemyImage =
+        document.getElementById("enemyImage");
+
+    if (enemyImage) {
+
+        enemyImage.classList.add(
+            "special-charge"
         );
+    }
+
+    // 前兆の効果音
+    playSound(
+        "specialWarningSound"
+    );
+
+    setTimeout(() => {
+
+        if (enemyImage) {
+
+            enemyImage.classList.remove(
+                "special-charge"
+            );
+        }
+
+    }, 700);
+}
 
         // ===============================
 // バリアの実
@@ -1474,9 +1585,55 @@ if (player.defending) {
 
 } else {
 
-    showMessage(
-        `${enemy.name}の攻撃！トカゲは${damage}ダメージ受けた！`
+    if (isSpecialAttack) {
+
+    // 必殺技の効果音
+    playSound(
+        "enemySpecialSound"
     );
+
+    // トカゲを揺らす
+    const playerImage =
+        document.getElementById(
+            "playerImage"
+        );
+
+    if (playerImage) {
+
+        playerImage.classList.remove(
+            "special-hit"
+        );
+
+        void playerImage.offsetWidth;
+
+        playerImage.classList.add(
+            "special-hit"
+        );
+
+        setTimeout(() => {
+
+            playerImage.classList.remove(
+                "special-hit"
+            );
+
+        }, 600);
+    }
+
+    showMessage(
+        `🔥 ${enemy.name}の必殺技！` +
+        `「${specialAttackName}」！！` +
+        ` トカゲは${damage}ダメージ受けた！`
+    );
+
+}
+     
+    else {
+
+        showMessage(
+            `${enemy.name}の攻撃！トカゲは${damage}ダメージ受けた！`
+        );
+
+    }
 }
 
 
