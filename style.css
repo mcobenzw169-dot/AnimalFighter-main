@@ -1454,6 +1454,15 @@ VS
 }
 
 
+/* ===============================
+   ショップ 所持コイン表示（PC）
+=============================== */
+
+.shopCoin {
+    font-size: 24px;
+    font-weight: bold;
+}
+
 /* スマホ用 */
 @media (max-width: 600px) {
 
@@ -3366,6 +3375,34 @@ VS
 
         touch-action: manipulation;
     }
+
+    /* =====================
+   ショップ：所持コイン固定表示
+   ===================== */
+
+.shopCoin {
+    position: sticky;
+    top: 0;
+
+    z-index: 999;
+
+    width: fit-content;
+    margin: 8px auto 12px;
+    padding: 10px 18px;
+
+    background: rgba(20, 70, 25, 0.95);
+
+    border: 3px solid #ffd84d;
+    border-radius: 999px;
+
+    color: white;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    box-shadow:
+        0 4px 12px rgba(0, 0, 0, 0.45);
+}
 
 
     /* =====================

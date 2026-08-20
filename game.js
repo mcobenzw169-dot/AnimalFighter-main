@@ -2582,11 +2582,16 @@ function buyItem(itemName) {
     // -------------------------------
 
     if (player.coins < price) {
-        showShopMessage(
-            `コインが足りないよ！あと${price - player.coins}コイン必要だよ。`
-        );
-        return;
-    }
+
+    // ❌ コイン不足のエラー音
+    playSound("errorSound");
+
+    showShopMessage(
+        `コインが足りないよ！あと${price - player.coins}コイン必要だよ。`
+    );
+
+    return;
+}
 
 
     // コインを支払う
@@ -2677,12 +2682,15 @@ function buyItem(itemName) {
     // 画面更新
     // -------------------------------
 
-    updateCoin();
+   updateCoin();
 updateInventory();
 updateShopButtons();
 updateEquipmentDisplay();
 updateBattleItemButtons();
 updateHP();
+
+// ★ 購入成功の効果音
+playSound("buySound");
 
 showShopMessage(
     `${displayName}を購入した！`
