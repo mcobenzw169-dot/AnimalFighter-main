@@ -3455,10 +3455,13 @@ function updateItemButton(
 // ===============================
 // 装備画像を表示
 // ===============================
-function updateEquipmentDisplay() {
+ function updateEquipmentDisplay() {
 
     const helmetImage =
         document.getElementById("equippedHelmet");
+
+    const steelHelmet =
+        document.getElementById("equippedSteelHelmet");
 
     const stickImage =
         document.getElementById("equippedStick");
@@ -3466,51 +3469,58 @@ function updateEquipmentDisplay() {
     const swordImage =
         document.getElementById("equippedSword");
 
+    const steelSword =
+        document.getElementById("equippedSteelSword");
 
+
+    // ===============================
     // ヘルメット
+    // 鋼を持っている時は葉っぱを隠す
+    // ===============================
+
     if (helmetImage) {
         helmetImage.style.display =
-            player.hasHelmet ? "block" : "none";
-    }
-
-    /*
-      木の棒は、木の剣を持っていない場合だけ表示。
-      木の剣を購入したら木の棒から持ち替える。
-    */
-    if (stickImage) {
-        stickImage.style.display =
-            player.hasStick && !player.hasSword
+            player.hasHelmet && !player.hasSteelHelmet
                 ? "block"
                 : "none";
     }
 
-    // 木の剣
-    if (swordImage) {
-        swordImage.style.display =
-            player.hasSword ? "block" : "none";
+    if (steelHelmet) {
+        steelHelmet.style.display =
+            player.hasSteelHelmet
+                ? "block"
+                : "none";
     }
 
-    const steelSword =
-document.getElementById("equippedSteelSword");
 
-if(steelSword){
+    // ===============================
+    // 武器
+    // 一番強い武器だけ表示
+    // ===============================
 
-    steelSword.style.display=
-    player.hasSteelSword
-    ?"block":"none";
+    if (stickImage) {
+        stickImage.style.display =
+            player.hasStick &&
+            !player.hasSword &&
+            !player.hasSteelSword
+                ? "block"
+                : "none";
+    }
 
-}
+    if (swordImage) {
+        swordImage.style.display =
+            player.hasSword &&
+            !player.hasSteelSword
+                ? "block"
+                : "none";
+    }
 
-const steelHelmet =
-document.getElementById("equippedSteelHelmet");
-
-if(steelHelmet){
-
-    steelHelmet.style.display=
-    player.hasSteelHelmet
-    ?"block":"none";
-
-}
+    if (steelSword) {
+        steelSword.style.display =
+            player.hasSteelSword
+                ? "block"
+                : "none";
+    }
 }
 
 
