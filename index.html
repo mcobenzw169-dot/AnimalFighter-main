@@ -501,13 +501,27 @@
     <!-- bossCompanionCommands終了 -->
 
 
-    <!-- バトルメッセージ -->
-    <p id="log">
-        暗黒うさぎが現れた！
-    </p>
+      <!-- バトルメッセージ -->
+<p id="log">
+    暗黒うさぎが現れた！
+</p>
+
+
+<!-- =========================
+     ゲームオーバー
+     最初からやり直すボタン
+========================== -->
+<button
+    id="retryButton"
+    onclick="restartGame()"
+    style="display: none;"
+>
+    🔄 もう一度はじめから
+</button>
+
 
 </div>
-<!-- battle終了 -->       
+<!-- battle終了 -->  
 
 
 <!-- =========================
@@ -1209,15 +1223,6 @@
      BGM
 ========================== -->
 
-<audio id="titleBgm" src="sounds/title.mp3" loop></audio>
-
-<audio id="battleBgm" src="sounds/battle.mp3" loop></audio>
-
-<audio id="walkBgm" src="sounds/walk.mp3" loop></audio>
-
-<audio id="shopBgm" src="sounds/shop.mp3" loop></audio>
-
-<audio id="bossBattleBgm" src="sounds/boss_battle.mp3" loop></audio>
 
 <audio
     id="specialWarningSound"
@@ -1234,15 +1239,20 @@
      イベント効果音
 ========================== -->
 
-<audio id="victorySound" src="sounds/victory.mp3"></audio>
-
-<audio id="bossIntroSound" src="sounds/boss_intro.mp3"></audio>
-
-<audio id="bossClearSound" src="sounds/boss_clear.mp3"></audio>
 
 <audio id="buySound" src="sounds/buy.mp3"></audio>
 
 <audio id="errorSound" src="sounds/error.mp3"></audio>
+
+<audio
+    id="bossSpecialWarningSound"
+    src="sounds/boss_special_warning.mp3">
+</audio>
+
+<audio
+    id="bossSpecialSound"
+    src="sounds/boss_special.mp3">
+</audio>
 
 
 <!-- =========================
@@ -1256,6 +1266,7 @@
 <audio id="scratchSound" src="sounds/scratch.mp3"></audio>
 
 <audio id="shedSound" src="sounds/shed.mp3"></audio>
+
 
 
 <!-- =========================
@@ -1305,6 +1316,18 @@
     loop
 ></audio>
 
+<!-- バイソン 攻撃をはじく音 -->
+<audio
+    id="bisonDefenseSound"
+    src="sounds/bison_defense.mp3">
+</audio>
+
+<!-- ゴリラ ドラミング追撃 -->
+<audio
+    id="gorillaDrumSound"
+    src="sounds/gorilla_drum.mp3">
+</audio>
+
 <!-- ラスボス戦BGM -->
 <audio
     id="bossBattleBgm"
@@ -1328,6 +1351,17 @@
     id="enemyIntroSound"
     src="sounds/enemy_intro.mp3"
 ></audio>
+
+<!-- 敵の先制攻撃 -->
+<audio
+    id="enemyFirstAttackSound"
+    src="sounds/enemy_first_attack.mp3">
+</audio>
+
+<audio
+    id="elephantReviveSound"
+    src="sounds/elephant_revive.mp3">
+</audio>
 
 <!-- ゲームオーバー音 -->
 <audio

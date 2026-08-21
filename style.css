@@ -3687,3 +3687,214 @@ VS
         height: 52px;
     }
 }
+
+/* ===============================
+   ダークタイガー 必殺技の前兆
+=============================== */
+
+.boss-special-charge {
+    animation: bossSpecialCharge 0.16s infinite alternate;
+}
+
+@keyframes bossSpecialCharge {
+
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    100% {
+        transform: scale(1.15);
+        filter: brightness(2);
+    }
+}
+
+
+/* ===============================
+   ラスボス必殺技をくらったトカゲ
+=============================== */
+
+.boss-special-hit {
+    animation: bossSpecialHit 0.07s 10;
+}
+
+@keyframes bossSpecialHit {
+
+    0% {
+        transform:
+            translate(-15px, -5px)
+            rotate(-3deg);
+    }
+
+    50% {
+        transform:
+            translate(15px, 5px)
+            rotate(3deg);
+    }
+
+    100% {
+        transform:
+            translate(-15px, 0)
+            rotate(-3deg);
+    }
+}
+
+/* ===============================
+   暗黒ライオン
+   ライオンブレスの前兆
+=============================== */
+
+.lion-special-charge {
+    animation:
+        lionSpecialCharge 0.15s infinite alternate;
+}
+
+@keyframes lionSpecialCharge {
+
+    0% {
+        transform: scale(1);
+        filter:
+            brightness(1)
+            drop-shadow(0 0 5px orange);
+    }
+
+    100% {
+        transform: scale(1.12);
+        filter:
+            brightness(1.8)
+            drop-shadow(0 0 20px red);
+    }
+}
+
+/* ===============================
+   暗黒ぞう 復活演出
+=============================== */
+
+.elephant-revive {
+    animation: elephantRevive 0.9s ease;
+}
+
+@keyframes elephantRevive {
+
+    0% {
+        transform: scale(0.8);
+        filter: brightness(0.5);
+    }
+
+    50% {
+        transform: scale(1.2);
+        filter: brightness(2.5);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+/* ===============================
+   ゲームオーバー
+   もう一度はじめからボタン
+=============================== */
+
+#retryButton {
+    display: none;
+
+    margin: 20px auto;
+    padding: 15px 28px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    border: 3px solid white;
+    border-radius: 14px;
+
+    background: linear-gradient(
+        180deg,
+        #ff5a5a,
+        #b90000
+    );
+
+    color: white;
+
+    cursor: pointer;
+
+    box-shadow:
+        0 5px 0 #650000,
+        0 8px 15px rgba(0, 0, 0, 0.4);
+
+    animation:
+        retryPulse 1s infinite alternate;
+}
+
+
+/* ボタンが少し大きくなったり戻ったりする */
+@keyframes retryPulse {
+
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.07);
+    }
+}
+
+
+/* 押した瞬間 */
+#retryButton:active {
+
+    transform: translateY(4px);
+
+    box-shadow:
+        0 1px 0 #650000,
+        0 3px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ===============================
+   暗黒ゴリラ
+   ドラミング追撃演出
+=============================== */
+
+.gorilla-drumming {
+    animation: gorillaDrumming 0.1s 6;
+}
+
+@keyframes gorillaDrumming {
+
+    0% {
+        transform: translateX(-6px) scale(1.03);
+    }
+
+    50% {
+        transform: translateX(6px) scale(1.08);
+    }
+
+    100% {
+        transform: translateX(-6px) scale(1.03);
+    }
+}
+
+
+/* ===============================
+   ドラミング追撃を受けたトカゲ
+=============================== */
+
+.gorilla-small-hit {
+    animation: gorillaSmallHit 0.08s 5;
+}
+
+@keyframes gorillaSmallHit {
+
+    0% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    100% {
+        transform: translateX(-5px);
+    }
+}

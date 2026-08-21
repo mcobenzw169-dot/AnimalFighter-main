@@ -8,6 +8,58 @@
 // ------------------------------
 let currentStage = 0;
 let enemySpecialUsed = false;
+
+// バイソンの攻撃無効カウント
+let bisonDefenseCount = 0;
+
+// キリン戦で、この攻撃前にアイテムを使ったか
+let giraffeItemUsed = false;
+
+// ステージ11の必殺技を使ったか
+let stage11SpecialUsed = false;
+
+// ラスボスが何回攻撃したか
+let bossAttackCount = 0;
+
+// ぞうが復活したか
+let elephantRevived = false;
+
+// ===============================
+// 1ターンごとのアイテム使用記録
+// ===============================
+let usedItemsThisTurn = {
+    bananaChips: false,
+    healFruit: false,
+    specialFruit: false,
+    barrierFruit: false,
+    rainbowBarrier: false
+};
+
+// ===============================
+// 通常ステージ
+// 同じアイテムは1ターン1回まで
+// ===============================
+function checkItemTurnLimit(itemName) {
+
+    // キリン戦は別の制御を使う
+    if (currentStage === 12) {
+        return true;
+    }
+
+    if (usedItemsThisTurn[itemName]) {
+
+        playSound("errorSound");
+
+        showMessage(
+            "⚠️ このアイテムはこのターンですでに使っている！"
+        );
+
+        return false;
+    }
+
+    return true;
+}
+
 let playerTurn = true;
 let gameFinished = false;
 
@@ -469,7 +521,25 @@ function playSound(id) {
 // ===============================
 function startGame() {
 
+    // ===============================
+    // ラスボスクリア音を停止
+    // ===============================
+    const bossClearSound =
+        document.getElementById(
+            "bossClearSound"
+        );
+
+    if (bossClearSound) {
+
+        bossClearSound.pause();
+        bossClearSound.currentTime = 0;
+
+    }
+
+    // タイトルBGM
     playBgm("titleBgm");
+
+
 
     hideAllScreens();
 
@@ -764,7 +834,18 @@ function startCurrentBattle() {
 // ステージを読み込む
 // ===============================
 function loadStage() {
+
     enemySpecialUsed = false;
+    stage11SpecialUsed = false;
+
+     // バイソンの防御カウントをリセット
+    bisonDefenseCount = 0;
+
+    // キリンのアイテム制限をリセット
+    giraffeItemUsed = false;
+
+    // ぞうの復活をリセット
+elephantRevived = false;
 
     const stageData = stages[currentStage];
 
@@ -910,6 +991,45 @@ showMessage(
         ? `${stageData.name}が現れた！仲間の攻撃も選べる！`
         : `${stageData.name}が現れた！`
 );
+// ===============================
+// ステージ10以降は敵が先制攻撃
+// currentStageは0から始まるので
+// ステージ10 = currentStage 9
+// ===============================
+if (
+    currentStage >= 9 &&
+    !stageData.isBoss
+) {
+
+    // 敵のターンにする
+    playerTurn = false;
+
+    updateBattleTurnEffect();
+
+    // トカゲの攻撃を使えなくする
+    disableButtons();
+
+    // 仲間も使えなくする
+    disableCompanionButtons();
+
+    updateBattleItemButtons();
+
+    // 敵先制攻撃の効果音
+playSound(
+    "enemyFirstAttackSound"
+);
+    
+    showMessage(
+        `⚠️ ${stageData.name}が先に動いた！`
+    );
+
+    // 少し待って敵が攻撃
+    setTimeout(() => {
+
+        enemyAttack();
+
+    }, 1000);
+}
 }
 
 // ===============================
@@ -1098,6 +1218,28 @@ function attack(type) {
         return;
     }
 
+    // ===============================
+// キリン戦
+// トカゲが攻撃したら
+// アイテム制限をリセット
+// ===============================
+if (currentStage === 12) {
+    giraffeItemUsed = false;
+}
+
+// ===============================
+// トカゲが攻撃したら
+// 各アイテムの使用制限をリセット
+// ===============================
+usedItemsThisTurn = {
+    bananaChips: false,
+    healFruit: false,
+    specialFruit: false,
+    barrierFruit: false,
+    rainbowBarrier: false
+};
+
+
 
     playerTurn = false;
     updateBattleTurnEffect();
@@ -1273,6 +1415,29 @@ if (
     damage +=
         player.attackBonus;
 
+// ===============================
+// バイソン
+// 3回に1回攻撃を無効化
+// ===============================
+if (
+    currentStage === 11
+) {
+
+    bisonDefenseCount += 1;
+
+    // 3回目、6回目、9回目…を無効
+if (
+    bisonDefenseCount % 3 === 0
+) {
+
+    damage = 0;
+
+    // バイソンが攻撃をはじく効果音
+    playSound(
+        "bisonDefenseSound"
+    );
+}
+}
 
     // 敵へダメージ
     enemy.hp = Math.max(
@@ -1283,12 +1448,28 @@ if (
 
     updateHP();
 
-    showDamage(damage);
+showDamage(damage);
+
+
+// ===============================
+// 攻撃結果のメッセージ
+// ===============================
+if (
+    currentStage === 11 &&
+    bisonDefenseCount % 3 === 0
+) {
+
+    showMessage(
+        "🐃 暗黒バイソンが強靭な体で攻撃をはじき返した！0ダメージ！"
+    );
+
+} else {
 
     showMessage(
         `トカゲの${attackName}！` +
         `${damage}ダメージ！`
     );
+}
 
 
     // -------------------------------
@@ -1296,14 +1477,31 @@ if (
     // -------------------------------
     if (enemy.hp <= 0) {
 
+    // ===============================
+    // ぞうはHP0で1回だけ復活
+    // ===============================
+    if (checkElephantRevive()) {
+
+        // 復活後は少し待って敵のターンへ
         setTimeout(() => {
 
-            victory();
+            enemyAttack();
 
-        }, 700);
+        }, 1200);
 
         return;
     }
+
+
+    // 通常の撃破
+    setTimeout(() => {
+
+        victory();
+
+    }, 700);
+
+    return;
+}
 
 
     // -------------------------------
@@ -1371,7 +1569,7 @@ if (
 // ===============================
 // 敵の攻撃
 // ===============================
-function enemyAttack() {
+function enemyAttack(skipBossWarning = false) {
 
     if (gameFinished) {
         return;
@@ -1380,6 +1578,59 @@ function enemyAttack() {
 
     const stageData =
         stages[currentStage];
+
+        // ===============================
+// ラスボス必殺技の前兆
+// 1回目・4回目・7回目…
+// ===============================
+const bossWillUseSpecial =
+    stageData &&
+    stageData.isBoss &&
+    bossAttackCount % 3 === 0;
+
+
+// まだ前兆を出していない場合
+if (
+    bossWillUseSpecial &&
+    !skipBossWarning
+) {
+
+    showMessage(
+        "⚠️ 暗黒王ダークタイガーが" +
+        "とてつもない力をためている……！！"
+    );
+
+    playSound(
+        "bossSpecialWarningSound"
+    );
+
+    const enemyImage =
+        document.getElementById(
+            "enemyImage"
+        );
+
+    if (enemyImage) {
+        enemyImage.classList.add(
+            "boss-special-charge"
+        );
+    }
+
+
+    // 1.3秒ためてから必殺技
+    setTimeout(() => {
+
+        if (enemyImage) {
+            enemyImage.classList.remove(
+                "boss-special-charge"
+            );
+        }
+
+        enemyAttack(true);
+
+    }, 1300);
+
+    return;
+}
 
         // レインボーバリア中は敵の攻撃を休ませる
 if (player.rainbowBarrierTurns > 0) {
@@ -1447,6 +1698,95 @@ let damage = randomNumber(
 
 let specialAttackName = "";
 let isSpecialAttack = false;
+let isBossSpecial = false;
+
+// ===============================
+// ステージ11・暗黒ライオン
+// HPが半分以下で1回だけ必殺技
+// ===============================
+// ===============================
+// ステージ11・暗黒ライオン
+// HP半分以下で必殺技の前兆
+// ===============================
+if (
+    currentStage === 10 &&
+    enemy.hp <= enemy.maxHp / 2 &&
+    !stage11SpecialUsed
+) {
+
+    // 先に「使用済み」にする
+    // これがないと1秒後にまた前兆が出る
+    stage11SpecialUsed = true;
+
+    showMessage(
+        "⚠️ 暗黒ライオンのたてがみが激しく燃え上がった！！"
+    );
+
+    // 前兆の効果音
+    playSound(
+        "specialWarningSound"
+    );
+
+    // ライオンを光らせる
+    const enemyImage =
+        document.getElementById(
+            "enemyImage"
+        );
+
+    if (enemyImage) {
+
+        enemyImage.classList.add(
+            "lion-special-charge"
+        );
+    }
+
+
+    // ===============================
+    // 1秒ためる
+    // ===============================
+    setTimeout(() => {
+
+        if (enemyImage) {
+
+            enemyImage.classList.remove(
+                "lion-special-charge"
+            );
+        }
+
+        // ライオンブレス発動
+        lionSpecialAttack();
+
+    }, 1000);
+
+
+    // 通常攻撃をさせない
+    return;
+}
+
+
+// ===============================
+// ラスボスの必殺技
+// ===============================
+if (
+    stageData &&
+    stageData.isBoss
+) {
+
+    // 1回目・4回目・7回目…
+    if (bossAttackCount % 3 === 0) {
+
+        damage = 450;
+
+        specialAttackName =
+            "スーパータイガーウルトラクラッシュ！！";
+
+        isSpecialAttack = true;
+        isBossSpecial = true;
+    }
+
+    // ラスボスの攻撃回数を1増やす
+    bossAttackCount += 1;
+}
 
 // ===============================
 // いぬ ～ くま
@@ -1509,10 +1849,18 @@ if (
     }
 
     // 前兆の効果音
+    if (isBossSpecial) {
+
     playSound(
-        "specialWarningSound"
+        "bossSpecialSound"
     );
 
+} else {
+
+    playSound(
+        "enemySpecialSound"
+    );
+}
     setTimeout(() => {
 
         if (enemyImage) {
@@ -1606,15 +1954,26 @@ if (player.defending) {
 
         void playerImage.offsetWidth;
 
-        playerImage.classList.add(
-            "special-hit"
-        );
+                if (isBossSpecial) {
+
+    playerImage.classList.add(
+        "boss-special-hit"
+    );
+
+} else {
+
+    playerImage.classList.add(
+        "special-hit"
+    );
+}
+    
 
         setTimeout(() => {
 
             playerImage.classList.remove(
-                "special-hit"
-            );
+    "special-hit",
+    "boss-special-hit"
+);
 
         }, 600);
     }
@@ -1647,12 +2006,13 @@ updateHP();
 
 
 // ラスボスの攻撃を実際に受けた場合、
-// 攻撃できる仲間が2匹ずつ減る
+// 2回目以降の攻撃で仲間が2匹ずつ減る
 if (
     stageData &&
     stageData.isBoss &&
     damage > 0 &&
-    player.hp > 0
+    player.hp > 0 &&
+    bossAttackCount > 1
 ) {
 
     setTimeout(() => {
@@ -1661,7 +2021,6 @@ if (
 
     }, 700);
 }
-
 
     // ゲームオーバー
     if (player.hp <= 0) {
@@ -1676,8 +2035,166 @@ if (
 
     }
 
+ 
 
+// ===============================
+// ゴリラ戦
+// 通常攻撃のあとにドラミング追撃
+// ===============================
+if (
+    currentStage === 9 &&
+    player.hp > 0
+) {
+
+    setTimeout(() => {
+
+        gorillaDrummingAttack();
+
+    }, 500);
+
+    return;
+}
+
+
+
+  
     // プレイヤーのターンへ
+setTimeout(() => {
+
+    playerTurn = true;
+
+    updateBattleTurnEffect();
+
+    enableButtons();
+
+    updateBananaButton();
+
+    showMessage(
+        "トカゲの番だ！技を選ぼう！"
+    );
+
+}, 800);
+
+}
+
+// ===============================
+// 暗黒ゴリラ
+// ドラミング追撃
+// ===============================
+function gorillaDrummingAttack() {
+
+    if (gameFinished) {
+        return;
+    }
+
+    const damage =
+        randomNumber(30, 50);
+
+
+    // ===============================
+    // ドラミング効果音
+    // ===============================
+    playSound(
+        "gorillaDrumSound"
+    );
+
+
+    // ===============================
+    // ゴリラを揺らす
+    // ===============================
+    const enemyImage =
+        document.getElementById(
+            "enemyImage"
+        );
+
+    if (enemyImage) {
+
+        enemyImage.classList.remove(
+            "gorilla-drumming"
+        );
+
+        void enemyImage.offsetWidth;
+
+        enemyImage.classList.add(
+            "gorilla-drumming"
+        );
+
+        setTimeout(() => {
+
+            enemyImage.classList.remove(
+                "gorilla-drumming"
+            );
+
+        }, 600);
+    }
+
+
+    // ===============================
+    // トカゲを小さく揺らす
+    // ===============================
+    const playerImage =
+        document.getElementById(
+            "playerImage"
+        );
+
+    if (playerImage) {
+
+        playerImage.classList.remove(
+            "gorilla-small-hit"
+        );
+
+        void playerImage.offsetWidth;
+
+        playerImage.classList.add(
+            "gorilla-small-hit"
+        );
+
+        setTimeout(() => {
+
+            playerImage.classList.remove(
+                "gorilla-small-hit"
+            );
+
+        }, 450);
+    }
+
+
+    // ===============================
+    // 追加ダメージ
+    // ===============================
+    player.hp -= damage;
+
+    if (player.hp < 0) {
+        player.hp = 0;
+    }
+
+    updateHP();
+
+
+    showMessage(
+        `🦍 暗黒ゴリラのドラミング追撃！` +
+        `トカゲは${damage}ダメージ受けた！`
+    );
+
+
+    // ===============================
+    // ゲームオーバー
+    // ===============================
+    if (player.hp <= 0) {
+
+        setTimeout(() => {
+
+            gameOver();
+
+        }, 800);
+
+        return;
+    }
+
+
+    // ===============================
+    // 追撃後にトカゲのターン
+    // ===============================
     setTimeout(() => {
 
         playerTurn = true;
@@ -1688,12 +2205,181 @@ if (
 
         updateBananaButton();
 
+        updateBattleItemButtons();
+
         showMessage(
-            "トカゲの番だ！技を選ぼう！"
+            "🦎 トカゲの番だ！技を選ぼう！"
+        );
+
+    }, 700);
+}
+
+// ===============================
+// 暗黒ライオンの必殺技
+// ===============================
+function lionSpecialAttack() {
+
+    if (gameFinished) {
+        return;
+    }
+
+    const damage = 350;
+
+    const skill =
+        getCompanionSkill("ライオン");
+
+
+    // 必殺技の効果音
+    playSound(
+        "enemySpecialSound"
+    );
+
+
+    // ===============================
+    // トカゲを激しく揺らす
+    // ===============================
+    const playerImage =
+        document.getElementById(
+            "playerImage"
+        );
+
+    if (playerImage) {
+
+        playerImage.classList.remove(
+            "special-hit"
+        );
+
+        void playerImage.offsetWidth;
+
+        playerImage.classList.add(
+            "special-hit"
+        );
+
+        setTimeout(() => {
+
+            playerImage.classList.remove(
+                "special-hit"
+            );
+
+        }, 600);
+    }
+
+
+    showMessage(
+        `🔥 暗黒ライオンの必殺技！` +
+        `「${skill.name}！！」` +
+        ` トカゲは${damage}ダメージ受けた！`
+    );
+
+
+    // HPを減らす
+    player.hp -= damage;
+
+    if (player.hp < 0) {
+        player.hp = 0;
+    }
+
+    updateHP();
+
+
+    // ===============================
+    // ゲームオーバー
+    // ===============================
+    if (player.hp <= 0) {
+
+        setTimeout(() => {
+
+            gameOver();
+
+        }, 800);
+
+        return;
+    }
+
+
+    // ===============================
+    // トカゲのターンへ
+    // ===============================
+    setTimeout(() => {
+
+        playerTurn = true;
+
+        updateBattleTurnEffect();
+
+        enableButtons();
+
+        updateBananaButton();
+
+        updateBattleItemButtons();
+
+        showMessage(
+            "🦎 トカゲの番だ！技を選ぼう！"
         );
 
     }, 800);
+}
+// ===============================
+// 暗黒ぞうの復活必殺技
+// HPが0になったら1回だけ100で復活
+// ===============================
+function checkElephantRevive() {
 
+    // ステージ14（暗黒ぞう）以外では発動しない
+    if (currentStage !== 13) {
+        return false;
+    }
+
+    // HPがまだ残っている
+    if (enemy.hp > 0) {
+        return false;
+    }
+
+    // すでに復活している
+    if (elephantRevived) {
+        return false;
+    }
+
+    // 1回だけ復活
+    elephantRevived = true;
+
+    // HP100で復活
+   enemy.hp = 100;
+
+updateHP();
+
+// 復活効果音
+playSound("elephantReviveSound");
+
+// ぞうを光らせる
+const enemyImage =
+    document.getElementById("enemyImage");
+
+if (enemyImage) {
+
+    enemyImage.classList.remove(
+        "elephant-revive"
+    );
+
+    void enemyImage.offsetWidth;
+
+    enemyImage.classList.add(
+        "elephant-revive"
+    );
+
+    setTimeout(() => {
+
+        enemyImage.classList.remove(
+            "elephant-revive"
+        );
+
+    }, 900);
+}
+
+showMessage(
+    "🐘 暗黒ぞうの必殺技！「生命の大復活」！！HPが100復活した！"
+);
+
+    return true;
 }
 
 
@@ -2201,15 +2887,38 @@ requestAnimationFrame(() => {
 
 });
 
-    updateBossCompanionButtons();
-    enableCompanionButtons();
+   updateBossCompanionButtons();
 
-    enableButtons();
-    updateBattleItemButtons();
 
-    showMessage(
-        "暗黒王ダークタイガーが現れた！"
-    );
+// ===============================
+// ラスボスは敵の先攻
+// ===============================
+
+// 攻撃回数をリセット
+bossAttackCount = 0;
+
+// ダークタイガーのターン
+playerTurn = false;
+
+updateBattleTurnEffect();
+
+// プレイヤー側は操作できない
+disableButtons();
+disableCompanionButtons();
+
+updateBattleItemButtons();
+
+showMessage(
+    "🐯 暗黒王ダークタイガーの先制攻撃！！"
+);
+
+
+// 1秒後にダークタイガーが攻撃
+setTimeout(() => {
+
+    enemyAttack();
+
+}, 1000);
 }
 
 
@@ -3204,6 +3913,34 @@ function closeInventory() {
 
 }
 
+// ===============================
+// キリンの制御能力
+// 攻撃前にアイテムは1個まで
+// ===============================
+function checkGiraffeItemLimit() {
+
+    // キリン戦以外は制限なし
+    if (currentStage !== 12) {
+        return true;
+    }
+
+    // すでにアイテムを1個使っている
+    if (giraffeItemUsed) {
+
+        // エラー音
+        playSound("errorSound");
+
+        showMessage(
+            "🦒 キリンの制御能力！攻撃するまでアイテムは1個しか使えない！"
+        );
+
+        return false;
+    }
+
+    return true;
+}
+
+
 
 // ===============================
 // バナナチップスを使う
@@ -3216,6 +3953,16 @@ function useBananaChips() {
     ) {
         return;
     }
+
+    // キリン戦のアイテム制限チェック
+if (!checkGiraffeItemLimit()) {
+    return;
+}
+
+// 通常ステージ
+if (!checkItemTurnLimit("bananaChips")) {
+    return;
+}
 
     // 🍌 バナナチップス効果音
 playSound("bananaSound");
@@ -3248,7 +3995,22 @@ playSound("bananaSound");
     disableButtons();
 
 
-    inventory.bananaChips -= 1;
+    // ===============================
+// キリン戦
+// アイテムを1個使ったことを記録
+// ===============================
+if (currentStage === 12) {
+
+    // キリン戦はアイテム全部で1個まで
+    giraffeItemUsed = true;
+
+} else {
+
+    // 通常ステージはバナナだけ使用済みにする
+    usedItemsThisTurn.bananaChips = true;
+}
+
+inventory.bananaChips -= 1;
 
 
     const healAmount = 40;
@@ -3297,6 +4059,16 @@ function useHealFruit() {
     if (!playerTurn || gameFinished) {
         return;
     }
+    // キリン戦のアイテム制限チェック
+if (!checkGiraffeItemLimit()) {
+    return;
+}
+
+// 通常ステージ
+// 回復の実は1ターン1回まで
+if (!checkItemTurnLimit("healFruit")) {
+    return;
+}
 
     if (inventory.healFruit <= 0) {
 
@@ -3321,7 +4093,17 @@ playSound("healFruitSound");
     playerTurn = false;
     disableButtons();
 
-    inventory.healFruit -= 1;
+    if (currentStage === 12) {
+
+    giraffeItemUsed = true;
+
+} else {
+
+    usedItemsThisTurn.healFruit = true;
+}
+
+inventory.healFruit -= 1;
+   
 
     const beforeHp = player.hp;
     const healAmount = 100;
@@ -3362,6 +4144,25 @@ function useSpecialFruit() {
         return;
     }
 
+    // キリン戦のアイテム制限チェック
+if (!checkGiraffeItemLimit()) {
+    return;
+}
+
+// ===============================
+// アイテム使用回数チェック
+// ===============================
+
+// キリン戦：種類に関係なく1個まで
+if (!checkGiraffeItemLimit()) {
+    return;
+}
+
+// 通常ステージ：必殺の実は1ターン1回まで
+if (!checkItemTurnLimit("specialFruit")) {
+    return;
+}
+
     if (inventory.specialFruit <= 0) {
 
         showMessage("必殺の実を持っていない！");
@@ -3376,6 +4177,26 @@ playSound("specialFruitSound");
 
     disableButtons();
 
+    // キリン戦
+// アイテムを1個使ったことを記録
+if (currentStage === 12) {
+    giraffeItemUsed = true;
+}
+
+// ===============================
+// 必殺の実を使用済みにする
+// ===============================
+if (currentStage === 12) {
+
+    // キリン戦
+    giraffeItemUsed = true;
+
+} else {
+
+    // 通常ステージ
+    usedItemsThisTurn.specialFruit = true;
+}
+    
     inventory.specialFruit--;
 
     // ゲーム後半は威力アップ
@@ -3398,16 +4219,39 @@ enemy.hp = Math.max(0, enemy.hp - damage);
 
     showMessage(`🔥 必殺の実！敵に${damage}ダメージ！`);
 
-    if (enemy.hp <= 0) {
+   if (enemy.hp <= 0) {
 
-        setTimeout(() => {
+    // ===============================
+    // ぞうはHP0で1回だけ復活
+    // 必殺の実で倒した場合も対象
+    // ===============================
+    if (checkElephantRevive()) {
 
-            victory();
+        showMessage(
+            "🐘 暗黒ぞうが復活した！戦いはまだ終わらない！"
+        );
 
-        }, 700);
+        // 必殺の実を使った後も
+        // トカゲのターンを続ける
+        playerTurn = true;
+
+        enableButtons();
+
+        updateBattleItemButtons();
 
         return;
     }
+
+
+    // 通常の撃破
+    setTimeout(() => {
+
+        victory();
+
+    }, 700);
+
+    return;
+}
 
     // 必殺の実を使ったあとも自分のターン
 playerTurn = true;
@@ -3431,6 +4275,17 @@ function useBarrierFruit() {
         return;
     }
 
+    // キリン戦のアイテム制限チェック
+if (!checkGiraffeItemLimit()) {
+    return;
+}
+
+// 通常ステージ
+// バリアの実は1ターン1回まで
+if (!checkItemTurnLimit("barrierFruit")) {
+    return;
+}
+
     if (inventory.barrierFruit <= 0) {
 
         showMessage("バリアの実を持っていない！");
@@ -3444,7 +4299,16 @@ function useBarrierFruit() {
 
     disableButtons();
 
-    inventory.barrierFruit--;
+    if (currentStage === 12) {
+
+    giraffeItemUsed = true;
+
+} else {
+
+    usedItemsThisTurn.barrierFruit = true;
+}
+
+inventory.barrierFruit--;
 
     player.barrierActive = true;
 
@@ -3474,6 +4338,17 @@ function useRainbowBarrier() {
         return;
     }
 
+    // キリン戦のアイテム制限チェック
+if (!checkGiraffeItemLimit()) {
+    return;
+}
+
+// 通常ステージ
+// レインボーバリアは1ターン1回まで
+if (!checkItemTurnLimit("rainbowBarrier")) {
+    return;
+}
+
     if (inventory.rainbowBarrier <= 0) {
 
         showMessage(
@@ -3495,7 +4370,16 @@ function useRainbowBarrier() {
 
     playSound("rainbowBarrierSound");
 
-    inventory.rainbowBarrier -= 1;
+    if (currentStage === 12) {
+
+    giraffeItemUsed = true;
+
+} else {
+
+    usedItemsThisTurn.rainbowBarrier = true;
+}
+
+inventory.rainbowBarrier -= 1;
 
     // 敵の攻撃を2回休ませる
     player.rainbowBarrierTurns = 2;
@@ -3935,22 +4819,45 @@ function startBossBattle() {
 
 
     // 仲間の画像・ボタンを作る
-    updateBossCompanionButtons();
+updateBossCompanionButtons();
 
-    enableCompanionButtons();
-
-
-    // トカゲの技
-    enableButtons();
-
-    updateBattleItemButtons();
-
-    updateEquipmentDisplay();
+updateEquipmentDisplay();
 
 
-    showMessage(
-        "暗黒王ダークタイガーが現れた！トカゲの技か仲間の攻撃を選ぼう！"
-    );
+// ===============================
+// ラスボスは敵の先攻
+// ===============================
+
+// 必殺技カウントを最初から
+bossAttackCount = 0;
+
+// 敵のターンにする
+playerTurn = false;
+
+updateBattleTurnEffect();
+
+
+// トカゲの技を使えなくする
+disableButtons();
+
+// 仲間の攻撃も使えなくする
+disableCompanionButtons();
+
+updateBattleItemButtons();
+
+
+showMessage(
+    "🐯 暗黒王ダークタイガーが先に動いた！！"
+);
+
+
+// 1秒後にラスボスが攻撃
+setTimeout(() => {
+
+    enemyAttack();
+
+}, 1000);
+
 }
 
 // ===============================
@@ -4409,117 +5316,120 @@ function showEnding() {
 }
 
 
-// ===============================
+
+
+// =========
+// ======================
 // 最初からやり直す
 // ===============================
 function restartGame() {
 
+    // ステージ
     currentStage = 0;
+
+    // バトル状態
     playerTurn = true;
     gameFinished = false;
 
+    enemySpecialUsed = false;
+    stage11SpecialUsed = false;
+    bisonDefenseCount = 0;
+    giraffeItemUsed = false;
+    elephantRevived = false;
+    bossAttackCount = 0;
 
+    // プレイヤー
     player.hp = 100;
     player.maxHp = 100;
     player.coins = 0;
+
     player.defending = false;
     player.barrierActive = false;
     player.rainbowBarrierTurns = 0;
+
     player.attackBonus = 0;
+
     player.hasHelmet = false;
     player.hasStick = false;
     player.hasSword = false;
     player.hasSteelSword = false;
-player.hasSteelHelmet = false;
+    player.hasSteelHelmet = false;
 
+    player.bossCompanionLimit = 0;
+    player.bossCompanionOrder = [];
 
-    inventory.bananaChips = 0;
-    inventory.healFruit = 0;
-    inventory.lifeFruit = 0;
-    inventory.rainbowBarrier = 0;
-    inventory.leafHelmet = 0;
-    inventory.woodenStick = 0;
-    inventory.woodenSword = 0;
-inventory.steelSword = 0;
-inventory.steelHelmet = 0;
-
-
+    // 仲間を全員リセット
     joinedFriends.length = 0;
 
-
-    enemy.name =
-        stages[0].name;
-
-    enemy.hp =
-        stages[0].hp;
-
-    enemy.maxHp =
-        stages[0].hp;
-
-    enemy.image =
-        stages[0].darkImage;
-
-
-    updateCoin();
-    updateInventory();
-    updateEquipmentDisplay();
-    updateWalkingFriends();
-    console.log("仲間一覧更新完了");
-
-
-    hideAllScreens();
-
-
-    const titleScreen =
-        document.getElementById(
-            "title"
-        );
-
-
-    if (titleScreen) {
-
-        titleScreen.style.display =
-            "block";
-
-    }
-
-}
-
-
+    // ===============================
+// ラスボス用の仲間表示を完全リセット
 // ===============================
-// ゲームオーバー
-// ===============================
-function gameOver() {
-
-     // バトルBGMを停止
-    stopBgm();
-
-    // ゲームオーバー音
-    playSound("gameOverSound");
-
-    gameFinished = true;
-
-    disableButtons();
-
-
-    showMessage(
-        "トカゲは力尽きた……。もう一度挑戦しよう！"
+const bossCompanionCommands =
+    document.getElementById(
+        "bossCompanionCommands"
     );
 
+const bossCompanionParty =
+    document.getElementById(
+        "bossCompanionParty"
+    );
 
+const bossCompanionButtons =
+    document.getElementById(
+        "bossCompanionButtons"
+    );
+
+if (bossCompanionCommands) {
+
+    bossCompanionCommands.style.display =
+        "none";
+}
+
+if (bossCompanionParty) {
+
+    bossCompanionParty.innerHTML = "";
+}
+
+if (bossCompanionButtons) {
+
+    bossCompanionButtons.innerHTML = "";
+}
+player.bossCompanionLimit = 0;
+player.bossCompanionOrder = [];
+
+bossAttackCount = 0;
+
+    // アイテムを全部リセット
+    inventory.bananaChips = 0;
+    inventory.fruit = 0;
+    inventory.healFruit = 0;
+    inventory.specialFruit = 0;
+    inventory.barrierFruit = 0;
+    inventory.rainbowBarrier = 0;
+
+    inventory.woodenStick = 0;
+    inventory.leafHelmet = 0;
+    inventory.woodenSword = 0;
+    inventory.steelSword = 0;
+    inventory.steelHelmet = 0;
+
+    // リトライボタンを隠す
     const retryButton =
-        document.getElementById(
-            "retryButton"
-        );
-
+        document.getElementById("retryButton");
 
     if (retryButton) {
-
-        retryButton.style.display =
-            "inline-block";
-
+        retryButton.style.display = "none";
     }
 
+    // 表示更新
+    updateHP();
+    updateCoin();
+    updateInventory();
+    updateBattleItemButtons();
+    updateEquipmentDisplay();
+
+    // 最初からゲーム開始
+    startGame();
 }
 
 
