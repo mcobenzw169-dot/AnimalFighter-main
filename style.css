@@ -4183,11 +4183,7 @@ VS
    ラスボス戦のHP・バトル上部を見やすく
 =============================== */
 
-#battle .battleTopArea {
-    position: sticky;
-    top: 0;
-    z-index: 50;
-}
+#battle 
 
 .bossCompanionAttackImage {
     width: 80px;
@@ -4212,4 +4208,129 @@ VS
     opacity: 0.25;
     filter: grayscale(1);
     cursor: default;
+}
+
+/* ===============================
+   脱皮の説明
+=============================== */
+.shedDescription {
+    width: 100%;
+    margin: 6px 0 0;
+    font-size: 13px;
+    text-align: center;
+    opacity: 0.85;
+}
+
+/* ===============================
+   HP・ステージ部分だけ固定
+=============================== */
+
+.statusArea {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+
+    background: rgba(20, 70, 25, 0.96);
+
+    padding: 6px 10px;
+
+    border-radius: 0 0 12px 12px;
+}
+
+/* ===============================
+   ステージ攻略メモカード
+=============================== */
+#stageTipCard {
+    position: fixed;
+
+    top: 50%;
+    left: 50%;
+
+    transform: translate(
+        -50%,
+        -50%
+    );
+
+    width: min(
+        88%,
+        420px
+    );
+
+    padding: 22px;
+
+    background:
+        rgba(
+            255,
+            255,
+            255,
+            0.97
+        );
+
+    border: 4px solid #ffd54f;
+
+    border-radius: 20px;
+
+    z-index: 9999;
+
+    text-align: center;
+
+    box-shadow:
+        0 8px 30px
+        rgba(0, 0, 0, 0.45);
+}
+
+#stageTipCard h2 {
+    margin-top: 0;
+}
+
+#stageTipText {
+    font-size: 16px;
+    line-height: 1.6;
+    font-weight: bold;
+}
+
+#stageTipCard button {
+    margin-top: 14px;
+    padding: 10px 24px;
+
+    font-size: 17px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/* ===============================
+   攻略メモカード
+   文字を見やすくする
+=============================== */
+
+#stageTipCard {
+    background: rgba(255, 255, 255, 0.98);
+    color: #222;
+}
+
+
+/* 攻略メモのタイトル */
+#stageTipCard h2 {
+    color: #7a4b00;
+    font-weight: bold;
+    text-shadow: none;
+}
+
+
+/* 攻略メモ本文 */
+#stageTipText {
+    color: #222;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.7;
+    text-shadow: none;
+}
+
+
+/* 次へボタン */
+#stageTipCard button {
+    color: white;
+    background: #ff9800;
+    font-weight: bold;
 }
