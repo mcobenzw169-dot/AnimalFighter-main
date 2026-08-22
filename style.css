@@ -4334,3 +4334,148 @@ VS
     background: #ff9800;
     font-weight: bold;
 }
+
+/* =================================
+   最終決戦説明画面
+   スマホの仲間配置
+================================= */
+@media (max-width: 600px) {
+
+    /* 仲間を入れているエリア */
+    .boss-party-preview {
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 10px;
+
+        width: 100%;
+
+        box-sizing: border-box;
+
+        padding: 15px 10px;
+
+        align-items: center;
+        justify-items: center;
+    }
+
+    /* 仲間画像 */
+    .boss-party-preview img {
+        width: 55px;
+        height: 55px;
+
+        object-fit: contain;
+
+        position: static;
+
+        transform: none;
+
+        margin: 0;
+    }
+}
+
+/* =================================
+   最終決戦ルール画面
+   スマホ用の仲間配置
+================================= */
+@media (max-width: 600px) {
+
+    /* トカゲ＋仲間全体 */
+    .boss-rule-party {
+        display: flex;
+        flex-direction: column;
+
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+
+    /* トカゲ */
+    .boss-rule-player {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        gap: 10px;
+
+        margin-bottom: 15px;
+    }
+
+    .boss-rule-player img {
+        width: 95px;
+        height: 95px;
+
+        object-fit: contain;
+    }
+
+
+    /* 仲間14匹 */
+    .boss-rule-friends {
+        display: grid;
+
+        grid-template-columns:
+            repeat(4, 1fr);
+
+        gap: 10px;
+
+        width: 100%;
+
+        padding: 12px;
+
+        box-sizing: border-box;
+
+        align-items: center;
+        justify-items: center;
+    }
+
+
+    /* 仲間画像 */
+    .boss-rule-friends img {
+        width: 55px;
+        height: 55px;
+
+        object-fit: contain;
+
+        position: static !important;
+
+        transform: none !important;
+
+        margin: 0 !important;
+    }
+}
+
+/* =================================
+   スマホ
+   HP・ステージを画面上部に固定
+================================= */
+@media (max-width: 600px) {
+
+    .statusArea {
+        position: fixed !important;
+
+        top: 0;
+        left: 50%;
+
+        transform: translateX(-50%);
+
+        width: 100%;
+        max-width: 600px;
+
+        z-index: 9999;
+
+        box-sizing: border-box;
+
+        background: rgba(15, 70, 30, 0.97);
+
+        padding: 6px 8px;
+
+        border-radius: 0 0 12px 12px;
+    }
+
+
+    /* 固定したHPのぶん、バトル画面上部に空間を作る */
+    #battle {
+        padding-top: 95px;
+    }
+}
