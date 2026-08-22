@@ -501,10 +501,17 @@
     <!-- bossCompanionCommands終了 -->
 
 
-      <!-- バトルメッセージ -->
+<!-- ラスボス覚醒文字 -->
+<div id="bossAwakenText">
+    🔥 覚 醒 ！ 🔥
+</div>     
+    
+    <!-- バトルメッセージ -->
 <p id="log">
     暗黒うさぎが現れた！
 </p>
+
+
 
 
 <!-- =========================
@@ -1316,6 +1323,12 @@
     loop
 ></audio>
 
+<!-- かめの甲羅にはじかれる音 -->
+<audio
+    id="turtleBlockSound"
+    src="sounds/turtle_block.mp3">
+</audio>
+
 <!-- バイソン 攻撃をはじく音 -->
 <audio
     id="bisonDefenseSound"
@@ -1328,12 +1341,29 @@
     src="sounds/gorilla_drum.mp3">
 </audio>
 
+<audio
+    id="specialWarningSound"
+    src="sounds/special_warning.mp3">
+</audio>
+
+<audio
+    id="enemySpecialSound"
+    src="sounds/enemy_special.mp3">
+</audio>
+
 <!-- ラスボス戦BGM -->
 <audio
     id="bossBattleBgm"
     src="sounds/boss_battle.mp3"
     loop
 ></audio>
+
+<!-- 覚醒後ラスボスBGM -->
+<audio
+    id="bossAwakenBgm"
+    src="sounds/boss_awaken_bgm.mp3"
+    loop>
+</audio>
 
 
 <!-- =========================
@@ -1374,6 +1404,12 @@
     id="bossIntroSound"
     src="sounds/boss_intro.mp3"
 ></audio>
+
+<!-- ダークタイガー覚醒 -->
+<audio
+    id="bossAwakenSound"
+    src="sounds/boss_awaken.mp3">
+</audio>
 
 <!-- ラスボスクリア -->
 <audio

@@ -9,17 +9,34 @@
 let currentStage = 0;
 let enemySpecialUsed = false;
 
+// いぬ～くまの攻撃回数
+// 必殺技をランダム発動させるために使う
+let enemyAttackCount = 0;
+
 // バイソンの攻撃無効カウント
 let bisonDefenseCount = 0;
 
 // キリン戦で、この攻撃前にアイテムを使ったか
 let giraffeItemUsed = false;
+// ===============================
+// キリンの必殺技
+// ===============================
+
+// キリンが必殺技を使ったか
+let giraffeSpecialUsed = false;
+
+// 必殺技を受けて攻撃力が下がっているか
+let giraffeAttackDown = false;
+
 
 // ステージ11の必殺技を使ったか
 let stage11SpecialUsed = false;
 
 // ラスボスが何回攻撃したか
 let bossAttackCount = 0;
+
+// ラスボスが覚醒したか
+let bossAwakened = false;
 
 // ぞうが復活したか
 let elephantRevived = false;
@@ -350,6 +367,7 @@ const stages = [
     attackMax: 140,
     coins: 5000,
     darkImage: "images/dark_tiger.png",
+    awakenedImage: "images/dark_tiger_awakened.png",
     normalImage: "images/dark_tiger.png",
     background: "images/dark_castle.png",
     isBoss: true
@@ -836,6 +854,10 @@ function startCurrentBattle() {
 function loadStage() {
 
     enemySpecialUsed = false;
+
+      // 敵の攻撃回数をリセット
+    enemyAttackCount = 0;
+
     stage11SpecialUsed = false;
 
      // バイソンの防御カウントをリセット
@@ -843,6 +865,12 @@ function loadStage() {
 
     // キリンのアイテム制限をリセット
     giraffeItemUsed = false;
+
+     // ===============================
+    // キリンの必殺技をリセット
+    // ===============================
+    giraffeSpecialUsed = false;
+    giraffeAttackDown = false;
 
     // ぞうの復活をリセット
 elephantRevived = false;
@@ -1255,21 +1283,50 @@ if (
     stages[currentStage].name === "暗黒かめ"
 ) {
 
-    showMessage(
-        "🐢 甲羅が固くて、かみつく攻撃が効かない！"
+    // ガキン！効果音
+    playSound(
+        "turtleBlockSound"
     );
 
-    // エラー効果音
-    const errorSound =
-        new Audio("sounds/error.mp3");
+    // ===============================
+    // かめをブルッと揺らす
+    // ===============================
+    const enemyImage =
+        document.getElementById(
+            "enemyImage"
+        );
 
-    errorSound.play();
+    if (enemyImage) {
+
+        enemyImage.classList.remove(
+            "turtle-block"
+        );
+
+        // アニメーションを再スタート
+        void enemyImage.offsetWidth;
+
+        enemyImage.classList.add(
+            "turtle-block"
+        );
+
+        setTimeout(() => {
+
+            enemyImage.classList.remove(
+                "turtle-block"
+            );
+
+        }, 500);
+    }
+
+    showMessage(
+        "🐢 ガキンッ！！甲羅が固すぎる！" +
+        "「かみつく」は効かない！"
+    );
 
     // 攻撃ターンは消費しない
     playerTurn = true;
 
     enableButtons();
-
     updateBattleItemButtons();
 
     return;
@@ -1415,6 +1472,20 @@ if (
     damage +=
         player.attackBonus;
 
+        // ===============================
+// キリンの必殺技による攻撃力低下
+// ===============================
+if (
+    currentStage === 12 &&
+    giraffeAttackDown
+) {
+
+    // 攻撃力を80％にする
+    damage = Math.floor(
+        damage * 0.8
+    );
+}
+
 // ===============================
 // バイソン
 // 3回に1回攻撃を無効化
@@ -1449,6 +1520,9 @@ if (
     updateHP();
 
 showDamage(damage);
+
+// ラスボスのHPが半分以下なら覚醒
+awakenDarkTiger();
 
 
 // ===============================
@@ -1579,14 +1653,20 @@ function enemyAttack(skipBossWarning = false) {
     const stageData =
         stages[currentStage];
 
-        // ===============================
-// ラスボス必殺技の前兆
-// 1回目・4回目・7回目…
+       // ===============================
+// ラスボス必殺技の間隔
+// 覚醒前：3回に1回
+// 覚醒後：2回に1回
 // ===============================
+const bossSpecialInterval =
+    bossAwakened
+        ? 2
+        : 3;
+
 const bossWillUseSpecial =
     stageData &&
     stageData.isBoss &&
-    bossAttackCount % 3 === 0;
+    bossAttackCount % bossSpecialInterval === 0;
 
 
 // まだ前兆を出していない場合
@@ -1696,6 +1776,17 @@ let damage = randomNumber(
     stageData.attackMax
 );
 
+// ===============================
+// 覚醒後の通常攻撃を強化
+// ===============================
+if (
+    stageData &&
+    stageData.isBoss &&
+    bossAwakened
+) {
+    damage += 50;
+}
+
 let specialAttackName = "";
 let isSpecialAttack = false;
 let isBossSpecial = false;
@@ -1763,6 +1854,60 @@ if (
     return;
 }
 
+// ===============================
+// ステージ13・暗黒キリン
+// HP半分以下で1回だけ必殺技
+// ===============================
+if (
+    currentStage === 12 &&
+    enemy.hp <= enemy.maxHp / 2 &&
+    !giraffeSpecialUsed
+) {
+
+    // 先に使用済みにする
+    giraffeSpecialUsed = true;
+
+    // 前兆メッセージ
+    showMessage(
+        "⚠️ 暗黒キリンが長い首を大きく振り上げた！！"
+    );
+
+    // 前兆の効果音
+    playSound(
+        "giraffeSpecialWarningSound"
+    );
+
+    // キリンを光らせる
+    const enemyImage =
+        document.getElementById(
+            "enemyImage"
+        );
+
+    if (enemyImage) {
+
+        enemyImage.classList.add(
+            "giraffe-special-charge"
+        );
+    }
+
+    // 1秒ためる
+    setTimeout(() => {
+
+        if (enemyImage) {
+
+            enemyImage.classList.remove(
+                "giraffe-special-charge"
+            );
+        }
+
+        // 必殺技発動
+        giraffeSpecialAttack();
+
+    }, 1000);
+
+    // このターンは通常攻撃しない
+    return;
+}
 
 // ===============================
 // ラスボスの必殺技
@@ -1773,7 +1918,10 @@ if (
 ) {
 
     // 1回目・4回目・7回目…
-    if (bossAttackCount % 3 === 0) {
+    if (
+    bossAttackCount %
+    bossSpecialInterval === 0
+) {
 
         damage = 450;
 
@@ -1814,13 +1962,68 @@ const specialDamage =
     enemySpecialDamage[enemyAnimalName];
 
 
+// ===============================
+// いぬ～くま
+// 必殺技の発動タイミングをランダム化
+// ===============================
+let enemyWillUseSpecial = false;
+
 if (
     specialDamage &&
     !enemySpecialUsed
 ) {
 
+    // 敵の攻撃回数を1増やす
+    enemyAttackCount += 1;
+
+
+    // 1回目は必殺技を使わない
+    if (enemyAttackCount === 1) {
+
+        enemyWillUseSpecial = false;
+
+    }
+
+    // 2～3回目はランダム
+    else if (
+        enemyAttackCount === 2 ||
+        enemyAttackCount === 3
+    ) {
+
+        // 40％の確率
+        enemyWillUseSpecial =
+            Math.random() < 0.4;
+
+    }
+
+    // 4回目まで出なかったら必ず発動
+    else if (enemyAttackCount >= 4) {
+
+        enemyWillUseSpecial = true;
+    }
+}
+
+
+// ===============================
+// 必殺技発動
+// ===============================
+if (enemyWillUseSpecial) {
+
     const skill =
         getCompanionSkill(enemyAnimalName);
+
+    enemySpecialUsed = true;
+
+    damage = specialDamage;
+
+    specialAttackName =
+        skill.name;
+
+    isSpecialAttack = true;
+
+    // ↓この下の今までの
+    // 必殺技前兆処理はそのまま
+
 
     enemySpecialUsed = true;
 
@@ -2022,18 +2225,30 @@ if (
     }, 700);
 }
 
-    // ゲームオーバー
-    if (player.hp <= 0) {
+    // ===============================
+// ゲームオーバー
+// ===============================
+if (player.hp <= 0) {
 
-        setTimeout(() => {
+    
 
-            gameOver();
+    playerTurn = false;
 
-        }, 800);
+    disableButtons();
+    disableCompanionButtons();
 
-        return;
+    showMessage(
+        "💀 トカゲは力尽きた……"
+    );
 
-    }
+    setTimeout(() => {
+
+        gameOver();
+
+    }, 800);
+
+    return;
+}
 
  
 
@@ -2282,19 +2497,28 @@ function lionSpecialAttack() {
     updateHP();
 
 
-    // ===============================
-    // ゲームオーバー
-    // ===============================
-    if (player.hp <= 0) {
+   // ===============================
+// ゲームオーバー
+// ===============================
+if (player.hp <= 0) {
 
-        setTimeout(() => {
+    playerTurn = false;
 
-            gameOver();
+    disableButtons();
+    disableCompanionButtons();
 
-        }, 800);
+    showMessage(
+        "💀 トカゲは力尽きた……"
+    );
 
-        return;
-    }
+    setTimeout(() => {
+
+        gameOver();
+
+    }, 800);
+
+    return;
+}
 
 
     // ===============================
@@ -2318,9 +2542,131 @@ function lionSpecialAttack() {
 
     }, 800);
 }
+
+// ===============================
+// 暗黒キリンの必殺技
+// 天空ネックハンマー
+// ===============================
+function giraffeSpecialAttack() {
+
+    if (gameFinished) {
+        return;
+    }
+
+    // 必殺技のダメージ
+    const damage = 250;
+
+
+    // ===============================
+    // 必殺技の効果音
+    // ===============================
+    playSound(
+        "giraffeSpecialSound"
+    );
+
+
+    // ===============================
+    // トカゲを揺らす
+    // ===============================
+    const playerImage =
+        document.getElementById(
+            "playerImage"
+        );
+
+    if (playerImage) {
+
+        playerImage.classList.remove(
+            "special-hit"
+        );
+
+        void playerImage.offsetWidth;
+
+        playerImage.classList.add(
+            "special-hit"
+        );
+
+        setTimeout(() => {
+
+            playerImage.classList.remove(
+                "special-hit"
+            );
+
+        }, 600);
+    }
+
+
+    // ===============================
+    // HPを減らす
+    // ===============================
+    player.hp -= damage;
+
+    if (player.hp < 0) {
+        player.hp = 0;
+    }
+
+    updateHP();
+
+
+    // ===============================
+    // 攻撃力30％ダウン
+    // キリン戦が終わるまで続く
+    // ===============================
+    giraffeAttackDown = true;
+
+
+    showMessage(
+        "🦒💥 暗黒キリンの必殺技！" +
+        "「天空ネックハンマー！！」" +
+        ` トカゲは${damage}ダメージ受けた！` +
+        " 衝撃で攻撃力が下がった！"
+    );
+
+
+    // ===============================
+    // HP0ならゲームオーバー
+    // ===============================
+    if (player.hp <= 0) {
+
+        playerTurn = false;
+
+        disableButtons();
+        disableCompanionButtons();
+
+        setTimeout(() => {
+
+            gameOver();
+
+        }, 800);
+
+        return;
+    }
+
+
+    // ===============================
+    // HPが残っていればトカゲのターン
+    // ===============================
+    setTimeout(() => {
+
+        playerTurn = true;
+
+        updateBattleTurnEffect();
+
+        enableButtons();
+        disableCompanionButtons();
+
+        updateBattleItemButtons();
+
+        showMessage(
+            "⚠️ 攻撃力が下がっている！技を選ぼう！"
+        );
+
+    }, 1000);
+}
+
+
 // ===============================
 // 暗黒ぞうの復活必殺技
-// HPが0になったら1回だけ100で復活
+// HPが0になったら1回だけ450で復活
 // ===============================
 function checkElephantRevive() {
 
@@ -2343,7 +2689,7 @@ function checkElephantRevive() {
     elephantRevived = true;
 
     // HP100で復活
-   enemy.hp = 100;
+   enemy.hp = 450;
 
 updateHP();
 
@@ -2382,6 +2728,184 @@ showMessage(
     return true;
 }
 
+// ===============================
+// ラスボス覚醒
+// ===============================
+function awakenDarkTiger() {
+
+    const stageData =
+        stages[currentStage];
+
+    // ラスボス以外では何もしない
+    if (
+        !stageData ||
+        !stageData.isBoss
+    ) {
+        return false;
+    }
+
+    // すでに覚醒済み
+    if (bossAwakened) {
+        return false;
+    }
+
+    // HPが半分より多いなら覚醒しない
+    if (
+        enemy.hp >
+        enemy.maxHp / 2
+    ) {
+        return false;
+    }
+
+
+    // ===============================
+// 覚醒！
+// ===============================
+bossAwakened = true;
+
+// ===============================
+// 「覚醒！」を画面中央に表示
+// ===============================
+const awakenText =
+    document.getElementById(
+        "bossAwakenText"
+    );
+
+if (awakenText) {
+
+    awakenText.classList.remove(
+        "show"
+    );
+
+    void awakenText.offsetWidth;
+
+    awakenText.classList.add(
+        "show"
+    );
+
+    setTimeout(() => {
+
+        awakenText.classList.remove(
+            "show"
+        );
+
+    }, 1800);
+}
+
+
+// 覚醒専用効果音
+playSound(
+    "bossAwakenSound"
+);
+
+// ===============================
+// 覚醒したらBGM変更
+// ===============================
+stopBgm();
+
+playBgm(
+    "bossAwakenBgm"
+);
+
+
+// ===============================
+// 覚醒後の名前を画面に表示
+// ===============================
+const awakenedBossName =
+    "覚醒・暗黒王ダークタイガー";
+
+const enemyNameElement =
+    document.getElementById(
+        "enemyName"
+    );
+
+const battleEnemyNameElement =
+    document.getElementById(
+        "battleEnemyName"
+    );
+
+if (enemyNameElement) {
+
+    enemyNameElement.textContent =
+        awakenedBossName;
+}
+
+if (battleEnemyNameElement) {
+
+    battleEnemyNameElement.textContent =
+        awakenedBossName;
+}
+
+
+    // 覚醒画像に変更
+    const enemyImage =
+        document.getElementById(
+            "enemyImage"
+        );
+
+        const battleScreen =
+    document.getElementById(
+        "battle"
+    );
+
+if (battleScreen) {
+
+    battleScreen.classList.remove(
+        "boss-screen-awakening"
+    );
+
+    void battleScreen.offsetWidth;
+
+    battleScreen.classList.add(
+        "boss-screen-awakening"
+    );
+
+    setTimeout(() => {
+
+        battleScreen.classList.remove(
+            "boss-screen-awakening"
+        );
+
+    }, 1500);
+}
+
+    if (
+        enemyImage &&
+        stageData.awakenedImage
+    ) {
+
+        enemyImage.src =
+            stageData.awakenedImage;
+    }
+
+
+    // メッセージ
+    showMessage(
+        "⚠️ 暗黒王ダークタイガーの体から" +
+        "暗黒の力があふれ出した……！！"
+    );
+
+
+    // 覚醒演出
+    if (enemyImage) {
+
+        enemyImage.classList.add(
+            "boss-awakening"
+        );
+
+        setTimeout(() => {
+
+            enemyImage.classList.remove(
+                "boss-awakening"
+            );
+
+        }, 1500);
+    }
+
+
+    // ここでは敵は攻撃しない
+    return true;
+}
 
 // ===============================
 // ステージ勝利
@@ -3154,11 +3678,18 @@ function companionAttack(index) {
             enemy.hp - skill.damage
         );
 
+        
+
         updateHP();
 
         showDamage(
             skill.damage
         );
+
+        // ===============================
+    // 仲間の攻撃でもラスボス覚醒判定
+    // ===============================
+    awakenDarkTiger();
 
         showMessage(
             `${friend.name}の${skill.name}！` +
@@ -4217,6 +4748,9 @@ enemy.hp = Math.max(0, enemy.hp - damage);
 
     showDamage(damage);
 
+    // ラスボスのHPが半分以下なら覚醒
+awakenDarkTiger();
+
     showMessage(`🔥 必殺の実！敵に${damage}ダメージ！`);
 
    if (enemy.hp <= 0) {
@@ -4789,6 +5323,11 @@ function startBossBattle() {
     player.barrierActive = false;
     player.rainbowBarrierTurns = 0;
     player.companionAttackDone = false;
+    // ラスボスの覚醒状態をリセット
+bossAwakened = false;
+
+// ラスボスの攻撃回数もリセット
+bossAttackCount = 0;
 
 
     // -------------------------------
@@ -5338,6 +5877,9 @@ function restartGame() {
     elephantRevived = false;
     bossAttackCount = 0;
 
+    // ラスボスの覚醒もリセット
+bossAwakened = false;
+
     // プレイヤー
     player.hp = 100;
     player.maxHp = 100;
@@ -5601,6 +6143,45 @@ document.addEventListener(
 
     }
 );
+
+// ===============================
+// ゲームオーバー
+// ===============================
+function gameOver() {
+
+    // BGM停止
+    stopBgm();
+
+    // ゲームオーバー音
+    playSound("gameOverSound");
+
+    // ゲーム終了状態
+    gameFinished = true;
+    playerTurn = false;
+
+    // 攻撃を使えなくする
+    disableButtons();
+    disableCompanionButtons();
+
+    // メッセージ
+    showMessage(
+        "💀 トカゲは力尽きた……。もう一度挑戦しよう！"
+    );
+
+    // ===============================
+    // もう一度はじめからボタンを表示
+    // ===============================
+    const retryButton =
+        document.getElementById(
+            "retryButton"
+        );
+
+    if (retryButton) {
+
+        retryButton.style.display =
+            "inline-block";
+    }
+}
 
 
 

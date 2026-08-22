@@ -3898,3 +3898,271 @@ VS
         transform: translateX(-5px);
     }
 }
+
+/* ===============================
+   ダークタイガー覚醒演出
+=============================== */
+
+.boss-awakening {
+    animation: bossAwakening 1.5s ease;
+}
+
+@keyframes bossAwakening {
+
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    25% {
+        transform: scale(0.9);
+        filter: brightness(0.5);
+    }
+
+    55% {
+        transform: scale(1.25);
+        filter: brightness(3);
+    }
+
+    75% {
+        transform: scale(1.1);
+        filter: brightness(1.8);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
+
+/* ===============================
+   ダークタイガー 超覚醒演出
+=============================== */
+
+.boss-awakening {
+    animation:
+        bossAwakenShake 0.12s 6,
+        bossAwakenFlash 1.8s ease;
+}
+
+@keyframes bossAwakenShake {
+
+    0% {
+        transform: translate(-8px, 0) scale(1);
+    }
+
+    25% {
+        transform: translate(8px, -4px) scale(1.05);
+    }
+
+    50% {
+        transform: translate(-10px, 5px) scale(1.1);
+    }
+
+    75% {
+        transform: translate(8px, -5px) scale(1.15);
+    }
+
+    100% {
+        transform: translate(0, 0) scale(1.2);
+    }
+}
+
+@keyframes bossAwakenFlash {
+
+    0% {
+        filter:
+            brightness(0.2)
+            drop-shadow(0 0 0 red);
+    }
+
+    30% {
+        filter:
+            brightness(3)
+            drop-shadow(0 0 20px red)
+            drop-shadow(0 0 35px purple);
+    }
+
+    60% {
+        filter:
+            brightness(1.8)
+            drop-shadow(0 0 30px purple);
+    }
+
+    100% {
+        filter:
+            brightness(1)
+            drop-shadow(0 0 15px red);
+    }
+}
+
+.boss-screen-awakening {
+    animation:
+        bossScreenAwakening 1.5s ease;
+}
+
+@keyframes bossScreenAwakening {
+
+    0% {
+        filter: brightness(1);
+    }
+
+    20% {
+        filter: brightness(0.15);
+    }
+
+    45% {
+        filter: brightness(3);
+    }
+
+    65% {
+        filter: brightness(0.6);
+    }
+
+    100% {
+        filter: brightness(1);
+    }
+}
+
+/* ===============================
+   ラスボス「覚醒！」文字
+=============================== */
+
+#bossAwakenText {
+    display: none;
+
+    position: absolute;
+    top: 40%;
+    left: 50%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 9999;
+
+    font-size: 55px;
+    font-weight: bold;
+
+    white-space: nowrap;
+
+    color: white;
+
+    text-shadow:
+        0 0 10px red,
+        0 0 20px red,
+        0 0 35px purple;
+}
+
+
+#bossAwakenText.show {
+    display: block;
+
+    animation:
+        awakenTextEffect 1.8s ease;
+}
+
+
+@keyframes awakenTextEffect {
+
+    0% {
+        transform:
+            translate(-50%, -50%)
+            scale(0.2);
+
+        opacity: 0;
+    }
+
+    30% {
+        transform:
+            translate(-50%, -50%)
+            scale(1.5);
+
+        opacity: 1;
+    }
+
+    60% {
+        transform:
+            translate(-50%, -50%)
+            scale(1);
+
+        opacity: 1;
+    }
+
+    100% {
+        transform:
+            translate(-50%, -50%)
+            scale(2);
+
+        opacity: 0;
+    }
+}
+
+/* ===============================
+   かめが攻撃をはじく演出
+=============================== */
+
+.turtle-block {
+    animation: turtleBlock 0.5s ease;
+}
+
+@keyframes turtleBlock {
+
+    0% {
+        transform: translateX(0);
+    }
+
+    20% {
+        transform: translateX(-8px);
+    }
+
+    40% {
+        transform: translateX(8px);
+    }
+
+    60% {
+        transform: translateX(-6px);
+    }
+
+    80% {
+        transform: translateX(6px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+/* ===============================
+   暗黒キリン 必殺技前兆
+=============================== */
+
+.giraffe-special-charge {
+    animation: giraffeSpecialCharge 1s ease;
+}
+
+@keyframes giraffeSpecialCharge {
+
+    0% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+
+    25% {
+        transform: scale(1.05) rotate(-2deg);
+        filter: brightness(1.5);
+    }
+
+    50% {
+        transform: scale(1.12) rotate(2deg);
+        filter: brightness(2.2);
+    }
+
+    75% {
+        transform: scale(1.08) rotate(-2deg);
+        filter: brightness(1.7);
+    }
+
+    100% {
+        transform: scale(1);
+        filter: brightness(1);
+    }
+}
