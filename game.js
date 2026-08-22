@@ -37,6 +37,8 @@ let giraffeAttackDown = false;
 // ステージ11の必殺技を使ったか
 let stage11SpecialUsed = false;
 
+let bossTutorialShown = false;
+
 // ラスボスが何回攻撃したか
 let bossAttackCount = 0;
 
@@ -1564,12 +1566,34 @@ if (currentStage >= 12) {
                 playerTurn = true;
 
                 disableButtons();
-                enableCompanionButtons();
+                // ===============================
+// 最初の1回だけ
+// 仲間追撃の説明を表示
+// ===============================
+if (!bossTutorialShown) {
 
-                showMessage(
-                    `🤝 追撃する仲間を1匹選ぼう！` +
-                    `残り${player.bossCompanionLimit}匹`
-                );
+    bossTutorialShown = true;
+
+    // 説明を読むまでは仲間を押せない
+    disableCompanionButtons();
+
+    showBossAttackTutorial();
+
+    return;
+}
+
+
+// ===============================
+// 2回目以降は普通に仲間を選ぶ
+// ===============================
+enableCompanionButtons();
+
+showMessage(
+    `🤝 追撃する仲間を1匹選ぼう！` +
+    `残り${player.bossCompanionLimit}匹`
+);
+
+return;
 
                 return;
             }
@@ -3621,6 +3645,62 @@ setTimeout(() => {
 }, 1000);
 }
 
+// ===============================
+// ラスボス戦
+// 仲間追撃チュートリアル表示
+// ===============================
+function showBossAttackTutorial() {
+
+    const card =
+        document.getElementById(
+            "bossAttackTutorial"
+        );
+
+    if (card) {
+        card.style.display = "block";
+    }
+}
+
+// ===============================
+// チュートリアルを閉じる
+// ===============================
+function closeBossAttackTutorial() {
+
+    const card =
+        document.getElementById(
+            "bossAttackTutorial"
+        );
+
+    if (card) {
+        card.style.display = "none";
+    }
+
+    // 仲間を選べるようにする
+    playerTurn = true;
+
+    disableButtons();
+    enableCompanionButtons();
+
+    showMessage(
+        `🤝 仲間を1匹選んで追撃しよう！` +
+        `残り${player.bossCompanionLimit}匹`
+    );
+
+
+    // 仲間エリアまで自動スクロール
+    const companionArea =
+        document.getElementById(
+            "bossCompanionCommands"
+        );
+
+    if (companionArea) {
+
+        companionArea.scrollIntoView({
+            behavior: "smooth",
+            block: "center"
+        });
+    }
+}
 
 // ===============================
 // 仲間ごとの必殺技
@@ -5489,6 +5569,9 @@ bossAwakened = false;
 
 // ラスボスの攻撃回数もリセット
 bossAttackCount = 0;
+
+ // ラスボス戦チュートリアルをリセット
+    bossTutorialShown = false;
 
 
     // -------------------------------
