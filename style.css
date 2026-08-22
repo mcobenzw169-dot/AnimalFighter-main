@@ -4166,3 +4166,50 @@ VS
         filter: brightness(1);
     }
 }
+
+/* ===============================
+   ラスボス戦
+   仲間コマンドだけスクロール
+=============================== */
+
+#bossCompanionCommands {
+    max-height: 220px;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+
+/* ===============================
+   ラスボス戦のHP・バトル上部を見やすく
+=============================== */
+
+#battle .battleTopArea {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.bossCompanionAttackImage {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    cursor: pointer;
+    margin: 5px;
+    border-radius: 12px;
+    transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.bossCompanionAttackImage:active {
+    transform: scale(0.9);
+}
+
+.companion-image-disabled {
+    opacity: 0.55;
+    cursor: default;
+}
+
+.companion-unavailable-image {
+    opacity: 0.25;
+    filter: grayscale(1);
+    cursor: default;
+}

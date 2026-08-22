@@ -13,6 +13,9 @@ let enemySpecialUsed = false;
 // 必殺技をランダム発動させるために使う
 let enemyAttackCount = 0;
 
+// 必殺技を出す攻撃回数
+let enemySpecialTurn = 1;
+
 // バイソンの攻撃無効カウント
 let bisonDefenseCount = 0;
 
@@ -855,8 +858,25 @@ function loadStage() {
 
     enemySpecialUsed = false;
 
+
       // 敵の攻撃回数をリセット
     enemyAttackCount = 0;
+
+     // ===============================
+// 必殺技を出す回数を決める
+// いぬだけ1回目確定
+// それ以外は1～3回目でランダム
+// ===============================
+if (currentStage === 2) {
+
+    // ステージ3＝暗黒いぬ
+    enemySpecialTurn = 1;
+
+} else {
+
+    enemySpecialTurn =
+        randomNumber(1, 3);
+}
 
     stage11SpecialUsed = false;
 
@@ -1964,7 +1984,7 @@ const specialDamage =
 
 // ===============================
 // いぬ～くま
-// 必殺技の発動タイミングをランダム化
+// 必殺技のタイミングをランダム化
 // ===============================
 let enemyWillUseSpecial = false;
 
@@ -1973,31 +1993,14 @@ if (
     !enemySpecialUsed
 ) {
 
-    // 敵の攻撃回数を1増やす
+    // 敵の攻撃回数
     enemyAttackCount += 1;
 
-
-    // 1回目は必殺技を使わない
-    if (enemyAttackCount === 1) {
-
-        enemyWillUseSpecial = false;
-
-    }
-
-    // 2～3回目はランダム
-    else if (
-        enemyAttackCount === 2 ||
-        enemyAttackCount === 3
+    // あらかじめ決めた回数になったら必殺技
+    if (
+        enemyAttackCount ===
+        enemySpecialTurn
     ) {
-
-        // 40％の確率
-        enemyWillUseSpecial =
-            Math.random() < 0.4;
-
-    }
-
-    // 4回目まで出なかったら必ず発動
-    else if (enemyAttackCount >= 4) {
 
         enemyWillUseSpecial = true;
     }
@@ -3268,74 +3271,79 @@ function updateBossCompanionButtons() {
             orderPosition < player.bossCompanionLimit;
 
 
-        // 仲間画像
-        const image =
-            document.createElement("img");
+       // ===============================
+// 仲間画像をクリックして攻撃
+// ===============================
+const image =
+    document.createElement("img");
 
-        image.src = friend.image;
-        image.alt = friend.name;
-        image.title = friend.name;
+image.src =
+    friend.image;
 
-        image.id =
-            `bossFriendImage${index}`;
+image.alt =
+    friend.name;
 
-        image.className =
-            "boss-party-friend";
+image.title =
+    `${friend.name}の追撃`;
 
-        if (!canAttack) {
-            image.classList.add(
-                "companion-unavailable"
-            );
-        }
+image.id =
+    `bossFriendImage${index}`;
 
-        partyArea.appendChild(image);
+image.className =
+    "bossCompanionAttackImage";
+
+image.dataset.friendIndex =
+    index;
 
 
-        // 仲間攻撃ボタン
-        const button =
-            document.createElement("button");
+// ===============================
+// 攻撃できる仲間
+// ===============================
+if (canAttack) {
 
-        button.type = "button";
+    // 最初はトカゲが攻撃するまで押せない
+    image.classList.add(
+        "companion-image-disabled"
+    );
 
-        button.className =
-            "companionAttackButton";
+} else {
 
-        button.dataset.friendIndex =
-            index;
+    // 攻撃できない仲間
+    image.classList.add(
+        "companion-unavailable-image"
+    );
+}
 
-        if (canAttack) {
 
-            button.textContent =
-                `${friend.name}の追撃`;
+// ===============================
+// 画像クリックで仲間攻撃
+// ===============================
+image.onclick = () => {
 
-            // トカゲが攻撃するまでは押せない
-            button.disabled = true;
-
-        } else {
-
-            button.textContent =
-                `${friend.name}は攻撃できない`;
-
-            button.disabled = true;
-
-            button.classList.add(
-                "companion-unavailable-button"
-            );
-        }
-
-        button.onclick = () => {
-
-            if (!canAttack) {
-                return;
-            }
-
-            companionAttack(index);
-        };
-
-        buttonArea.appendChild(button);
+    if (!canAttack) {
+        return;
     }
-);}
 
+    if (
+        image.classList.contains(
+            "companion-image-disabled"
+        )
+    ) {
+        return;
+    }
+
+    companionAttack(index);
+};
+
+
+// ===============================
+// 仲間画像を画面に追加
+// ===============================
+partyArea.appendChild(image);
+
+}); // joinedFriends.forEach終了
+
+} // updateBossCompanionButtons終了 
 
 // ===============================
 // ラスボス戦を開始
@@ -3738,63 +3746,48 @@ function companionAttack(index) {
 }
 
 // ===============================
-// 仲間攻撃ボタンを無効化
+// 仲間画像を無効化
 // ===============================
 function disableCompanionButtons() {
 
-    const buttons =
+    const images =
         document.querySelectorAll(
-            ".companionAttackButton"
+            ".bossCompanionAttackImage"
         );
 
-    buttons.forEach(button => {
+    images.forEach(image => {
 
-        button.disabled = true;
-
+        image.classList.add(
+            "companion-image-disabled"
+        );
     });
 }
 
-
 // ===============================
-// 攻撃できる仲間ボタンだけ有効化
+// 仲間画像を有効化
 // ===============================
 function enableCompanionButtons() {
 
-    const stageData =
-        stages[currentStage];
-
-    if (
-        !stageData ||
-        !stageData.isBoss ||
-        gameFinished
-    ) {
-        return;
-    }
-
-    const buttons =
+    const images =
         document.querySelectorAll(
-            ".companionAttackButton"
+            ".bossCompanionAttackImage"
         );
 
-    buttons.forEach(button => {
+    images.forEach(image => {
 
-        const friendIndex =
-            Number(
-                button.dataset.friendIndex
-            );
+        // 攻撃できない仲間はそのまま
+        if (
+            image.classList.contains(
+                "companion-unavailable-image"
+            )
+        ) {
+            return;
+        }
 
-        const orderPosition =
-            player.bossCompanionOrder.indexOf(
-                friendIndex
-            );
-
-        const canAttack =
-            orderPosition !== -1 &&
-            orderPosition <
-                player.bossCompanionLimit;
-
-        button.disabled =
-            !canAttack;
+        // 押せるようにする
+        image.classList.remove(
+            "companion-image-disabled"
+        );
     });
 }
 
