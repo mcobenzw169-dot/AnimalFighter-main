@@ -9,6 +9,8 @@
 let currentStage = 0;
 let enemySpecialUsed = false;
 
+let shedCount = 0;
+
 // いぬ～くまの攻撃回数
 // 必殺技をランダム発動させるために使う
 let enemyAttackCount = 0;
@@ -911,6 +913,9 @@ function loadStage() {
       // 敵の攻撃回数をリセット
     enemyAttackCount = 0;
 
+    // 脱皮回数をリセット
+shedCount = 0;
+
      // ===============================
 // 必殺技を出す回数を決める
 // いぬだけ1回目確定
@@ -1455,6 +1460,30 @@ if (
     // HP回復＋次の敵攻撃を半減
     // -------------------------------
     else if (type === "shed") {
+
+      // ===============================
+    // 脱皮は1ステージ3回まで
+    // ===============================
+    if (shedCount >= 3) {
+
+        playSound("errorSound");
+
+        showMessage(
+            "🛡️ このステージではもう脱皮できない！"
+        );
+
+        // ターンは消費しない
+        playerTurn = true;
+
+        enableButtons();
+        updateBattleItemButtons();
+
+        return;
+    }
+
+    // 脱皮を1回使用
+    shedCount += 1;
+   
 
         playSound("shedSound");
 
