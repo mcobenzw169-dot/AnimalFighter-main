@@ -915,6 +915,7 @@ function loadStage() {
 
     // 脱皮回数をリセット
 shedCount = 0;
+updateShedButton();
 
      // ===============================
 // 必殺技を出す回数を決める
@@ -1307,6 +1308,30 @@ function showMessage(message) {
 
 }
 
+// ===============================
+// 脱皮の残り回数を表示
+// ===============================
+function updateShedButton() {
+
+    const button =
+        document.getElementById(
+            "shedButton"
+        );
+
+    if (!button) {
+        return;
+    }
+
+    const remaining =
+        Math.max(
+            0,
+            3 - shedCount
+        );
+
+    button.textContent =
+        `🛡️ 脱皮（残り${remaining}）`;
+}
+
 
 // ===============================
 // プレイヤーの攻撃
@@ -1482,10 +1507,12 @@ if (
     }
 
     // 脱皮を1回使用
-    shedCount += 1;
-   
+shedCount += 1;
 
-        playSound("shedSound");
+// 残り回数の表示を更新
+updateShedButton();
+
+playSound("shedSound");
 
         player.defending = true;
 
